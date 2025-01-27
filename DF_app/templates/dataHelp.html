@@ -1,0 +1,456 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="list-group mx-0">
+        <label class="list-group-item d-flex gap-2">
+            <input class="form-check-input flex-shrink-0" type="checkbox" value="">
+            <span>
+                Maine
+                <small class="d-block text-muted">With support text underneath to add more detail</small>
+            </span>
+        </label>
+        <label class="list-group-item d-flex gap-2">
+            <input class="form-check-input flex-shrink-0" type="checkbox" value="">
+            <span>
+                Vermont
+                <small class="d-block text-muted">Some other text goes here</small>
+            </span>
+        </label>
+        <label class="list-group-item d-flex gap-2">
+            <input class="form-check-input flex-shrink-0" type="checkbox" value="">
+            <span>
+                New Hampshire
+                <small class="d-block text-muted">And we end with another snippet of text</small>
+            </span>
+        </label>
+    </div>
+</div>
+
+<hr>
+<h4>Temperature normals</h4>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="matcheckbox" name="matcheck" value="mat">
+            <span>
+                Annual Mean Temperature (1961-1990)
+            </span>
+        </div>
+        <div id="mattextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-mat-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-mat-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="matslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="tavesmcheckbox" name="tavesmcheck" value="tavesm">
+            <span>
+                Summer Mean Temperature (1961-1990)
+            </span>
+        </div>
+        <div id="tavesmtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-tavesm-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-tavesm-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="tavesmslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="tavewtcheckbox" name="tavewtcheck" value="tavewt">
+            <span>
+                Winter Mean Temperature (1961-1990)
+            </span>
+        </div>
+        <div id="tavewttextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-tavewt-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-tavewt-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="tavewtslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="mcmtcheckbox" name="mcmtcheck" value="mcmt">
+            <span>
+                Coldest Month Mean Temperature (1961-1990)
+            </span>
+        </div>
+        <div id="mcmttextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-mcmt-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-mcmt-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="mcmtslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="mwmtcheckbox" name="mwmtcheck" value="mwmt">
+            <span>
+                Warmest Month Mean Temperature (1961-1990)
+            </span>
+        </div>
+        <div id="mwmttextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-mwmt-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-mwmt-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="mwmtslider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<h3>Precipitation normals</h3>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="mapcheckbox" name="mapcheck" value="map">
+            <span>
+                Annual Mean Precipitation (1961-1990)
+            </span>
+        </div>
+        <div id="maptextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-map-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-map-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="mapslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="pptsmcheckbox" name="pptsmcheck" value="pptsm">
+            <span>
+                Summer Mean Precipitation (1961-1990)
+            </span>
+        </div>
+        <div id="pptsmtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-pptsm-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-pptsm-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="pptsmslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="pptwtcheckbox" name="pptwtcheck" value="pptwt">
+            <span>
+                Winter Mean Precipitation (1961-1990)
+            </span>
+        </div>
+        <div id="pptwttextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-pptwt-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-pptwt-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="pptwtslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="pascheckbox" name="pascheck" value="pas">
+            <span>
+                Precipitation As Snow (1961-1990)
+            </span>
+        </div>
+        <div id="pastextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-pas-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-pas-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="passlider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<h3>Season Length</h3>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="nffdcheckbox" name="nffdcheck" value="nffd">
+            <span>
+                Number of Frost Free Days (1961-1990)
+            </span>
+        </div>
+        <div id="nffdtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-nffd-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-nffd-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="nffdslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="dd0checkbox" name="dd0check" value="dd0">
+            <span>
+                Number of Chilling Degree Days (1961-1990)
+            </span>
+        </div>
+        <div id="dd0textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-dd0-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-dd0-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="dd0slider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="dd5checkbox" name="dd5check" value="dd5">
+            <span>
+                Number of Growing Degree days (1961-1990)
+            </span>
+        </div>
+        <div id="dd5textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-dd5-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-dd5-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="dd5slider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+<h3>Terrain (Elevation)</h3>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="minelevationcheckbox" name="minelevationcheck" value="minelevation">
+            <span>
+                Minimum Elevation
+            </span>
+        </div>
+        <div id="minelevationtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-minelevation-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-minelevation-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="minelevationslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="maxelevationcheckbox" name="maxelevationcheck" value="maxelevation">
+            <span>
+                Maximum Elevation
+            </span>
+        </div>
+        <div id="maxelevationtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-maxelevation-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-maxelevation-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="maxelevationslider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="meanelevationcheckbox" name="meanelevationcheck" value="meanelevation">
+            <span>
+                Mean Elevation
+            </span>
+        </div>
+        <div id="meanelevationtextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-meanelevation-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-meanelevation-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="meanelevationslider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="slopecheckbox" value="">
+            <span>
+                Slope classes
+            </span>
+        </div>
+        <div id="slopelist"</div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="aspectcheckbox" value="">
+            <span>
+                Aspect classes
+            </span>
+        </div>
+        <div id="aspectlist"</div>
+    </div>
+</div>
+
+<hr>
+<h3>Soil Moixture Content</h3>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="aws25checkbox" name="aws25check" value="aws25">
+            <span>
+                Soil Moisture Content at 25cm
+            </span>
+        </div>
+        <div id="aws25textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-aws25-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-aws25-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="aws25slider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="aws50checkbox" name="aws50check" value="aws50">
+            <span>
+                Soil moisture Content at 50 cm
+            </span>
+        </div>
+        <div id="aws50textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-aws50-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-aws50-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="aws50slider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="aws100checkbox" name="aws100check" value="aws100">
+            <span>
+                Soil Moisture Content at 100 cm
+            </span>
+        </div>
+        <div id="aws100textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-aws100-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-aws100-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="aws100slider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="aws150checkbox" name="aws150check" value="aws150">
+            <span>
+                Soil Moisture Content at 150 cm
+            </span>
+        </div>
+        <div id="aws150textnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-aws150-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-aws150-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="aws150slider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="waterdistcheckbox" name="waterdistcheck" value="waterdist">
+            <span>
+                Proximity to water
+            </span>
+        </div>
+        <div id="waterdisttextnslider">
+            <hr>
+            <div class="unibox-search unibox-search-regular">
+                <input type="text" readonly="readonly" size="5" class="unibox-waterdist-min" placeholder="Min temp" onfocus="uniboxResetHint('Min',false,this);" onblur="uniboxResetHint('Min',true,this);" value="Min" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <input type="text" readonly="readonly" size="5" class="unibox-waterdist-max" placeholder="Max temp" onfocus="uniboxResetHint('Max',false,this);" onblur="uniboxResetHint('Max',true,this);" value="Max" onkeyup="uniboxKeyUp(event,this)" onkeydown="uniboxKeyDown(event,this)" />
+                <div id="waterdistslider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="d-flex gap-5 justify-content-center">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="soildrcheckbox" value="">
+            <span>
+                Soil drainage classes
+            </span>
+        </div>      
+        <div id="soildrclasslist"</div> 
+    </div>
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="lithologycheckbox" value="">
+            <span>
+                Bedrock Material
+            </span>
+        </div>
+        <div id="lithologyclasslist"</div>
+    </div>
+</div>
+
+<hr>
+
+<div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white">
+    <div class="container box-border">
+        <div id="check_box">
+            <input class="form-check-input flex-shrink-0" type="checkbox" id="speciecheckbox" value="">
+            <span>
+                Specie
+            </span>
+        </div>
+        <div id="specieclasslist"</div>
+    </div>
+</div>       
+
+<hr>
+
+{% endblock %}
+
+
+
+
+
+

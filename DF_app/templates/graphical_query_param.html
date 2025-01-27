@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<p>{{state_list}}</p>
+<p>
+    {{temp_list}}
+</p>
+<p>
+    {{prec_list}}
+</p>
+<p>{{season_list}}</p>
+<p>
+    {{elev_list}}
+</p>
+<p>
+    {{slpaspt_list}}
+</p>
+<p>
+    {{waterdist_list}}
+</p>
+<p>
+    {{moisture_list}}
+</p>
+<p>
+    {{drainage_list}}
+</p>
+<p>
+    {{bedrock_list}}
+</p>
+<p>
+    {{species_list}}
+</p>
+
+mat_params = minmaxmat,
+tavesm_params = minmaxtavesm,
+tavewt_params = minmaxtavewt,
+mcmt_params = minmaxmcmt,
+mwmt_params = minmaxmwmt,
+map_params = minmaxmap,
+pptsm_params = minmaxpptsm,
+pptwt_params = minmaxpptwt,
+pas_params = minmaxpas,
+nffd_params = minmaxnffd,
+dd0_params = minmaxdd0,
+dd5_params = minmaxdd5,
+minelevation_params = minmaxminelevation,
+maxelevation_params = minmaxmaxelevation,
+meanelevation_params = minmaxmeanelevation,
+aws25_params = minmaxaws25,
+aws50_params = minmaxaws50,
+aws100_params = minmaxaws100,
+aws150_params = minmaxaws150,
+waterdist_params = minmaxwaterdist,
+slope_list = slope_list,
+aspect_list = aspect_list,
+drainageClass_list = drainageClass_list,
+lithology_list = lithology_list,
+species_list = species_list
+
+    {% endblock %}

@@ -1,0 +1,395 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="map-content" id="visElement"> </div>
+
+
+<div class="filter-content">
+    <img class="d-block mx-auto mb-4" src="/static/images/INSPIRES_logo.png" alt="" width="72" height="57">
+    <hr>
+    <div class="inner-menu">
+        <a href="{{url_for('environmentalDataTask')}}">
+            <img style="padding:2px;" src="/static/images/env_icon.png" alt="" width="50" height="50" title="Environmental Data Exploration">
+            <div class="caption">Environmental Data</div>
+        </a>
+        <a href="{{url_for('treeinventorytask')}}" style="border:1px solid black;">
+            <img style="padding:2px;" src="/static/images/tree_inventory.png" alt="" width="50" height="50" title="Tree Inventory Data Exploration">
+            <div class="caption">Tree Inventory Data</div>
+        </a>
+        <a href="{{url_for('treepreferencestask')}}">
+            <img style="padding:2px;" src="/static/images/analysis.png" alt="" width="50" height="50" title="Analyses of Tree Preference Habitat">
+            <div class="caption">Tree Environmental Preferences</div>
+        </a>
+    </div>
+    <hr>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="scientificNamesSwitch">
+        <label class="form-check-label" for="scientificNamesSwitch">Use scientific names</label>
+    </div>
+    <hr>
+    <h6>Inventory Year</h6>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend" id="inventoryyearcheckbox">
+            <label class="input-group-text" for="inputGroupSelect01">Start</label>
+        </div>
+        <select class="form-select" id="sel_year">
+            <option id="selyearinitial" selected>Select</option>
+        </select>
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend" id="inventoryyearcheckbox2">
+            <label class="input-group-text" for="inputGroupSelect01">End</label>
+        </div>
+        <select class="form-select" id="sel_year2">
+            <option id="selyearinitial2" selected>Select</option>
+        </select>
+    </div>
+    <hr>
+    <div class="container">
+        <div class="level-one-box">
+            <button class="plusminuslevelonebutton" type="button" id="angiospermfamily"><span></span></button>
+            <button class="text-button-levelone taxbutton" cname="angiosperms" sname="Magnoliopsida" value="NCBITaxon_3398" id="angiosperms">Angiosperms</button>
+        </div>
+        <div class="level-two-filter-box" id="angiospermfamilygroup"></div>
+        <hr>
+        <div class="level-one-box">
+            <button class="plusminuslevelonebutton" type="button" id="gymnospermfamily"><span></span></button>
+            <button class="text-button-levelone taxbutton" cname="gymnosperms" sname="Acrogymnospermae" value="NCBITaxon_1437180" id="gymnosperms">Gymnosperms</button>
+        </div>
+        <div class="level-two-filter-box" id="gymnospermfamilygroup"></div>
+    </div>
+    <hr>
+    <div class="" id="tree-filters">
+        <div class="container box-border">
+            <div id="check_box">
+                <input class="form-check-input flex-shrink-0  treefilterschkbox treepropslidercheckbox" type="checkbox" id="dbhcheckbox" name="dbhcheck" value="TreeDiameterAtBreastHeight">
+                <span>
+                    Diameter at Breast Height
+                </span>
+                <div class="slider" id="dbhslider"></div>
+            </div>
+        </div>
+        <hr>
+        <div class="container box-border treefilters">
+            <div id="check_box">
+                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropslidercheckbox" type="checkbox" id="tahcheckbox" name="tahcheck" value="TreeActualHeight">
+                <span>
+                    Tree Actual Height
+                </span>
+                <div class="slider" id="tahslider"></div>
+            </div>
+        </div>
+        <hr>
+        <div class="container box-border">
+            <div id="check_box">
+                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropslidercheckbox" type="checkbox" id="tthcheckbox" name="tthcheck" value="TreeTotalHeight">
+                <span>
+                    Tree Total Height
+                </span>
+                <div class="slider" id="tthslider"></div>
+            </div>
+        </div>
+        <hr>
+        <div class="container box-border">
+            <div id="check_box">
+                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropclassgroupcheckbox" type="checkbox" id="tscheckbox" value="TreeStatus">
+                <span>
+                    Tree Status
+                </span>
+                <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="tsgroup"></div>
+            </div>
+        </div>
+        <hr>
+        <h6>Metric</h6>
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="metricbtnradio" id="metricbtnradio1" autocomplete="off" value="abundance" checked>
+            <label class="btn btn-outline-primary" for="metricbtnradio1">Abundance</label>
+
+            <input type="radio" class="btn-check" name="metricbtnradio" id="metricbtnradio2" autocomplete="off" value="presenceAbsence">
+            <label class="btn btn-outline-primary" for="metricbtnradio2">Presence/Absence</label>
+        </div>
+    </div>
+    <hr>
+    <div class="container non-spatial-filters" id="environmentalfilters">
+        <h6>Add Environmental Property Layer</h6>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#temperature-filters" aria-expanded="false" aria-controls="temperature-filters">
+                Temperature
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="temperature-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0  environvariablechkbox slidercheckbox" type="checkbox" id="matcheckbox" name="matcheck" value="CLNA_AnnualMeanTemperature1991-2020">
+                    <span>
+                        Annual Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavesmcheckbox" name="tavesmcheck" value="CLNA_SummerMeanTemperature1991-2020">
+                    <span>
+                        Summer Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavewtcheckbox" name="tavewtcheck" value="CLNA_WinterMeanTemperature1991-2020">
+                    <span>
+                        Winter Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="taveatcheckbox" name="taveatcheck" value="CLNA_FallMeanTemperature1991-2020">
+                    <span>
+                        Fall Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavespcheckbox" name="tavespcheck" value="CLNA_SpringMeanTemperature1991-2020">
+                    <span>
+                        Spring Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mcmtcheckbox" name="mcmtcheck" value="CLNA_ColdestMonthMeanTemperature1991-2020">
+                    <span>
+                        Coldest Month Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mwmtcheckbox" name="mwmtcheck" value="CLNA_WarmestMonthMeanTemperature1991-2020">
+                    <span>
+                        Warmest Month Mean Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="extcheckbox" name="extcheck" value="CLNA_ExtremeMaximumTemperature1991-2020">
+                    <span>
+                        Extreme Maximum Temperature
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="emtcheckbox" name="emtcheck" value="CLNA_ExtremeMinimumTemperature1991-2020">
+                    <span>
+                        Extreme Minimum Temperature
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#precipitation-filters" aria-expanded="false" aria-controls="precipitation-filters">
+                Precipitation
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="precipitation-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mapcheckbox" name="mapcheck" value="CLNA_AnnualMeanPrecipitation1991-2020">
+                    <span>
+                        Annual Mean Precipitation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptsmcheckbox" name="pptsmcheck" value="CLNA_SummerPrecipitation1991-2020">
+                    <span>
+                        Summer Precipitation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptwtcheckbox" name="pptwtcheck" value="CLNA_WinterPrecipitation1991-2020">
+                    <span>
+                        Winter Precipitation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptatcheckbox" name="pptatcheck" value="CLNA_FallPrecipitation1991-2020">
+                    <span>
+                        Fall Precipitation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptspcheckbox" name="pptspcheck" value="CLNA_SpringPrecipitation1991-2020">
+                    <span>
+                        Spring Precipitation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pascheckbox" name="pascheck" value="CLNA_PrecipitationAsSnow1991-2020">
+                    <span>
+                        Precipitation As Snow
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#seasonlength-filters" aria-expanded="false" aria-controls="seasonlength-filters">
+                Season Length
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="seasonlength-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="nffdcheckbox" name="nffdcheck" value="CLNA_NumberOfFrostFreeDays1991-2020">
+                    <span>
+                        Number of Frost Free Days
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#humidity-filters" aria-expanded="false" aria-controls="humidity-filters">
+                Humidity
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="humidity-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="rhcheckbox" name="rhcheck" value="CLNA_MeanAnnualRelativeHumidity1991-2020">
+                    <span>
+                        Mean Annual Relative Humidity
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#terrain-filters" aria-expanded="false" aria-controls="terrain-filters">
+                Terrain
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="terrain-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="minelevationcheckbox" name="minelevationcheck" value="MinimumElevation">
+                    <span>
+                        Minimum Elevation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="maxelevationcheckbox" name="maxelevationcheck" value="MaximumElevation">
+                    <span>
+                        Maximum Elevation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="meanelevationcheckbox" name="meanelevationcheck" value="MeanElevation">
+                    <span>
+                        Mean Elevation
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="meanslopecheckbox" name="meanslopecheck" value="MeanSlope">
+                    <span>
+                        Mean Slope
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="aspectcheckbox" value="DominantAspectClass">
+                    <span>
+                        Aspect Classes
+                    </span>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#soil-filters" aria-expanded="false" aria-controls="soil-filters">
+                Soil and Geology
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="soil-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="aws150checkbox" name="aws150check" value="AverageWaterStorage150cm">
+                    <span>
+                        Soil Moisture Content at 150 cm
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="soildrcheckbox" value="DominantSoilDrainageClass">
+                    <span>
+                        Soil Drainage Classes
+                    </span>
+                </div>
+            </div>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="soilordercheckbox" value="DominantSoilOrder">
+                    <span>
+                        Soil Order
+                    </span>
+                </div>
+            </div>
+            <div class="container">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="lithologycheckbox" value="GeneralizedLithology">
+                    <span>
+                        Bedrock Material
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#landcover-filters" aria-expanded="false" aria-controls="landcover-filters">
+                Land Cover
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="landcover-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="landcovercheckbox" value="GeneralizedLandCover">
+                    <span>
+                        Land Cover Classes
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <button class="btn btn-primary" id="generateMapButton" type="button">Generate Map</button>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/scripts/treeInventoryTask.js"></script>
+{% endblock %}
