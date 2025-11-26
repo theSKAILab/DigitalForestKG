@@ -1,0 +1,571 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="map-content" id="visElement" class="collapsible"></div>
+
+<!-- Spinner -->
+<div class="spinner-border custom-spinner" role="status" id="environmental-spinner">
+        <span class="visually-hidden">Loading...</span>
+</div>
+
+<!-- Legend -->
+<div class="map-legend">
+    <ul>
+        <li>Selected critertia satisifed: </li>
+        <li>Selected criteria not satisfied: </li>
+
+    </ul>
+</div>
+
+
+<div class='instructions-outer'>
+    <div>
+        <button id="hideinstructions" data-bs-toggle="collapse" data-bs-target="#environmental-instructions">Hide/Show instructions</button>
+    </div>
+<div class="instructions-content collapse show" id="environmental-instructions"> 
+    <p><b>This page allows you to view a specified region in Maine colored by whether it fits a set of environmental criteria.</b></p>  
+    <p>For example, you can see which areas in Kennenbec county have more than 170 frost free days, and between 1200 and 1250 mm annual precipitation (on average).  You can select regions by county, or draw regions directly on the map.  The resulting map will be colored by whether each area in the region meets all of the criteria you selected or not (if it only meets some of the criteria, e.g. it has 175 frost free days, but only 1100 mm of precipitation, it will be colored as not meeting the criteria).</p>
+    <p><b>To use this page:</b>
+        <ol>
+        <li>Select “administrative boundaries” to select one or more counties, or “draw on map” to draw your region directly on the map</li>
+        <li>If you choose administrative boundaries, you will see a list of counties appear and you can select one or more to view by checking the checkboxes.  When you are done, press ok.</li>
+        <li>If you select draw on map, you will draw a polygon on the map by clicking your mouse to place each corner.  When you have closed the polygon, you will be taken to the next page.</li>
+        <li>For each property you want to filter on:
+            <ol>
+                <li>Select the category (e.g. temperature)
+                <li>Select the specific property (e.g. Summer Mean Temperature (1991-2020)
+                <li>Once the slider loads, set the min and max values you want to filter on</li>
+            </ol>
+        </li>
+        <li>Once you have done this for all of the properties you want to filter on, press apply filters and wait for the map to generate.</li>
+</li>
+        </ol></p>
+</div>
+</div>
+
+<div class="filter-content">
+    <img class="d-block mx-auto mb-4" src="/static/images/INSPIRES_logo.png" alt="" width="72" height="57">
+    <hr>
+
+    <hr>
+
+    <div class="inner-menu">
+        <a href="{{url_for('environmentalDataTask')}}" style="border:1px solid black;">
+            <img style="padding:2px;" src="/static/images/env_icon.png" alt="" width="50" height="50" title="Environmental Data Exploration">
+            <div class="caption">Environmental Data</div>
+        </a>
+        <a href={{url_for('treeinventorytask')}}>
+            <img style="padding:2px;" src="/static/images/tree_inventory.png" alt="" width="50" height="50" title="Tree Inventory Data Exploration">
+            <div class="caption">Tree Inventory Data</div>
+        </a>
+        <a href="{{url_for('treepreferencestask')}}">
+            <img style="padding:2px;" src="/static/images/analysis.png" alt="" width="50" height="50" title="Analyses of Tree Preference Habitat">
+            <div class="caption">Tree Environmental Preferences</div>
+        </a>
+    </div>
+    <hr>
+    <h5>Spatial Filters </h5>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="spatialfilterradio" id="adminboundaries">
+        <label class="form-check-label" for="adminboundaries">
+            Administrative boundaries
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="spatialfilterradio" id="drawonmap">
+        <label class="form-check-label" for="drawonmap">
+            Draw on map
+        </label>
+    </div>
+    <hr>
+    <div class="container non-spatial-filters" id="environmentalfilters">
+        <h5>Environmental Factors</h5>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#temperature-filters" aria-expanded="false" aria-controls="temperature-filters">
+                Temperature
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="temperature-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0  environvariablechkbox slidercheckbox" type="checkbox" id="matcheckbox" name="matcheck" value="CLNA_AnnualMeanTemperature1991-2020">
+                    <span>
+                        Annual Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="matslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavesmcheckbox" name="tavesmcheck" value="CLNA_SummerMeanTemperature1991-2020">
+                    <span>
+                        Summer Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="tavesmslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavewtcheckbox" name="tavewtcheck" value="CLNA_WinterMeanTemperature1991-2020">
+                    <span>
+                        Winter Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="tavewtslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="taveatcheckbox" name="taveatcheck" value="CLNA_FallMeanTemperature1991-2020">
+                    <span>
+                        Fall Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="taveatslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="tavespcheckbox" name="tavespcheck" value="CLNA_SpringMeanTemperature1991-2020">
+                    <span>
+                        Spring Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="tavespslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mcmtcheckbox" name="mcmtcheck" value="CLNA_ColdestMonthMeanTemperature1991-2020">
+                    <span>
+                        Coldest Month Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="mcmtslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mwmtcheckbox" name="mwmtcheck" value="CLNA_WarmestMonthMeanTemperature1991-2020">
+                    <span>
+                        Warmest Month Mean Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="mwmtslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="extcheckbox" name="extcheck" value="CLNA_ExtremeMaximumTemperature1991-2020">
+                    <span>
+                        Extreme Maximum Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="extslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="emtcheckbox" name="emtcheck" value="CLNA_ExtremeMinimumTemperature1991-2020">
+                    <span>
+                        Extreme Minimum Temperature (1991-2020)
+                    </span>
+                    <div class="slider" id="emtslider"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#precipitation-filters" aria-expanded="false" aria-controls="precipitation-filters">
+                Precipitation
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="precipitation-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="mapcheckbox" name="mapcheck" value="CLNA_AnnualMeanPrecipitation1991-2020">
+                    <span>
+                        Annual Mean Precipitation (1991-2020)
+                    </span>
+                    <div class="slider" id="mapslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptsmcheckbox" name="pptsmcheck" value="CLNA_SummerPrecipitation1991-2020">
+                    <span>
+                        Summer Precipitation (1991-2020)
+                    </span>
+                    <div class="slider" id="pptsmslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptwtcheckbox" name="pptwtcheck" value="CLNA_WinterPrecipitation1991-2020">
+                    <span>
+                        Winter Precipitation (1991-2020)
+                    </span>
+                    <div class="slider" id="pptwtslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptatcheckbox" name="pptatcheck" value="CLNA_FallPrecipitation1991-2020">
+                    <span>
+                        Fall Precipitation (1991-2020)
+                    </span>
+                    <div class="slider" id="pptatslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pptspcheckbox" name="pptspcheck" value="CLNA_SpringPrecipitation1991-2020">
+                    <span>
+                        Spring Precipitation (1991-2020)
+                    </span>
+                    <div class="slider" id="pptspslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="pascheckbox" name="pascheck" value="CLNA_PrecipitationAsSnow1991-2020">
+                    <span>
+                        Precipitation As Snow (1991-2020)
+                    </span>
+                    <div class="slider" id="passlider"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#seasonlength-filters" aria-expanded="false" aria-controls="seasonlength-filters">
+                Season Length
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="seasonlength-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="nffdcheckbox" name="nffdcheck" value="CLNA_NumberOfFrostFreeDays1991-2020">
+                    <span>
+                        Number of Frost Free Days (1991-2020)
+                    </span>
+                    <div class="slider" id="nffdslider"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#humidity-filters" aria-expanded="false" aria-controls="humidity-filters">
+                Humidity
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="humidity-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="rhcheckbox" name="rhcheck" value="CLNA_MeanAnnualRelativeHumidity1991-2020">
+                    <span>
+                        Mean Annual Relative Humidity (1991-2020)
+                    </span>
+                    <div class="slider" id="rhslider"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#terrain-filters" aria-expanded="false" aria-controls="terrain-filters">
+                Terrain
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="terrain-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="minelevationcheckbox" name="minelevationcheck" value="MinimumElevation">
+                    <span>
+                        Minimum Elevation
+                    </span>
+                    <div class="slider" id="minelevationslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="maxelevationcheckbox" name="maxelevationcheck" value="MaximumElevation">
+                    <span>
+                        Maximum Elevation
+                    </span>
+                    <div class="slider" id="maxelevationslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="meanelevationcheckbox" name="meanelevationcheck" value="MeanElevation">
+                    <span>
+                        Mean Elevation
+                    </span>
+                    <div class="slider" id="meanelevationslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="meanslopecheckbox" name="meanslopecheck" value="MeanSlope">
+                    <span>
+                        Mean Slope
+                    </span>
+                    <div class="slider" id="meanslopeslider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="aspectcheckbox" value="DominantAspectClass">
+                    <span>
+                        Aspect Classes
+                    </span>
+                    <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="aspectgroup"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#soil-filters" aria-expanded="false" aria-controls="soil-filters">
+                Soil and Geology
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="soil-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox slidercheckbox" type="checkbox" id="aws150checkbox" name="aws150check" value="AverageWaterStorage150cm">
+                    <span>
+                        Soil Moisture Content at 150 cm
+                    </span>
+                    <div class="slider" id="aws150slider"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="soildrcheckbox" value="DominantSoilDrainageClass">
+                    <span>
+                        Soil Drainage Classes
+                    </span>
+                    <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="drainagegroup"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="soilordercheckbox" value="DominantSoilOrder">
+                    <span>
+                        Soil Order
+                    </span>
+                    <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="soilordergroup"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="container">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="lithologycheckbox" value="GeneralizedLithology">
+                    <span>
+                        Bedrock Material
+                    </span>
+                    <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="litgroup"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="level-one-box">
+            <button class="arrow-btn" type="button" data-bs-toggle="collapse" data-bs-target="#landcover-filters" aria-expanded="false" aria-controls="landcover-filters">
+                Land Cover
+            </button>
+        </div>
+        <div class="level-two-filter-box collapse" id="landcover-filters">
+            <div class="container box-border">
+                <div id="check_box">
+                    <input class="form-check-input flex-shrink-0 environvariablechkbox classgroupcheckbox" type="checkbox" id="landcovercheckbox" value="GeneralizedLandCover">
+                    <span>
+                        Land Cover Classes
+                    </span>
+                    <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="landcovergroup"></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="inner-menu">
+            <button class="btn btn-primary" type="button" id="submituserinput" disabled>Apply filters</button>
+        </div>
+    </div>
+</div>
+
+<div class="layer-filters">
+    <div class="container spatial-filters" id="spatialfilters">
+        <h3>Locations</h3>
+        <hr>
+        <ul id="spatial-maine">
+            <li id="li_1" class="contains-items">
+                <div class="checkbox statecheckbox">
+                    <input id="stateOfMaine" type="checkbox" value="1" name="categories[]">
+                    <label for="stateofMaine">
+                        Maine
+                    </label>
+                </div>
+                <ul>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me1" type="checkbox" value="Androscoggin" centroid="[-70.20644, 44.16585]">
+                            <label for="me1">
+                                Androscoggin
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me2" type="checkbox" value="Aroostook" centroid="[-68.59889, 46.65881]">
+                            <label for="me2">
+                                Aroostook
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me3" type="checkbox" value="Cumberland" centroid="[-70.33020, 43.80608]">
+                            <label for="me3">
+                                Cumberland
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me4" type="checkbox" value="Franklin" centroid="[-70.44408, 44.97416]">
+                            <label for="me4">
+                                Franklin
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me5" type="checkbox" value="Hancock" centroid="[-68.36821, 44.56289]">
+                            <label for="me5">
+                                Hancock
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me6" type="checkbox" value="Kennebec" centroid="[-69.76726, 44.40916]">
+                            <label for="me6">
+                                Kennebec
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me7" type="checkbox" value="Knox" centroid="[-69.01877, 44.02904]">
+                            <label for="me7">
+                                Knox
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me8" type="checkbox" value="Lincoln" centroid="[-69.52576, 43.99779]">
+                            <label for="me8">
+                                Lincoln
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me9" type="checkbox" value="Oxford" centroid="[-70.75657, 44.49977]">
+                            <label for="me9">
+                                Oxford
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me10" type="checkbox" value="Penobscot" centroid="[-68.64943, 45.40051]">
+                            <label for="me10">
+                                Penobscot
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me11" type="checkbox" value="Piscataquis" centroid="[-69.28453, 45.83736]">
+                            <label for="me11">
+                                Piscataquis
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me12" type="checkbox" value="Sagadahoc" centroid="[-69.83931, 43.91173]">
+                            <label for="me12">
+                                Sagadahoc
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me13" type="checkbox" value="Somerset" centroid="[-69.95882, 45.51386]">
+                            <label for="me13">
+                                Somerset
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me14" type="checkbox" value="Waldo" centroid="[-69.12188, 44.48525]">
+                            <label for="me14">
+                                Waldo
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me15" type="checkbox" value="Washington" centroid="[-67.60906, 44.96946]">
+                            <label for="me15">
+                                Washington
+                            </label>
+                        </div>
+                    </li>
+                    <li class="li_1">
+                        <div class="checkbox countycheckbox">
+                            <input class="cntychkbox" id="me16" type="checkbox" value="York" centroid="[-70.67014, 43.42922]">
+                            <label for="me16">
+                                York
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="button" id="applyspatialfilters" disabled>OK</button>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+<script src="/static/scripts/environmentalDataTask.js"></script>
+
+
+{% endblock %}
+
+
+
+
+

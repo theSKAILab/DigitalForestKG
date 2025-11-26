@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Digital Forest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
+                </li>
+                
+                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        RUN APP
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{{url_for('appHome')}}">Graphical query Interface</a></li>
+                        <li><a class="dropdown-item" href="{{url_for('sparql_query')}}">SPARQL query Interface</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{url_for('dataHelp')}}">Help</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <h1>INSPIRES DIGITAL FOREST</h1>
+    <p class="lead">
+        This app leverages the capabilities of inferencing through a knowledge graph to explore the complex interactions between numerous components in the New England forest.
+    </p>
+</div>
+
+<div class="about-inspires">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>INSPIRES</h2>
+            <p>
+                Leveraging Intelligent Informatics and Smart Data for Improved Understanding of Northern Forest Ecosystem Resilience.
+            </p>
+            <p><a class="btn btn-default" href="https://crsf.umaine.edu/inspires/">Learn more &raquo;</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; {{ year }} - INSPIRES Digital Forest</p>
+</div>
+
+{% endblock %}
+
+
