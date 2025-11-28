@@ -4,133 +4,6 @@ jQuery(document).ready(function () {
     $("#environmentalfilters").hide();
     $('.slider').hide();
     $('.classgroup').hide();
-    /*
-    var map = new ol.Map({
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM()
-            })
-        ],
-        target: 'visElement',
-        view: new ol.View({
-            center: ol.proj.transform([43.979433, -72.809594], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 7
-        })
-    });
-    */
-
-    //var useGeographic = new ol.proj.useGeographic();
-    /*
-    var map = new ol.Map({
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM(),
-            }),
-        ],
-        target: 'visElement',
-        view: new ol.View({
-            center: ol.proj.fromLonLat([-72.809594, 43.979433]),
-            zoom: 7,
-        }),
-    });
-
-    var vectorLayers = {};
-    var dpi = 72;
-
-    function mapScale() {
-        var unit = map.getView().getProjection().getUnits();
-        var resolution = map.getView().getResolution();
-        var inchesPerMetre = 39.37;
-
-        return resolution * map.getView().getProjection().getMetersPerUnit() * inchesPerMetre * dpi;
-    }
-
-    var layerStyles = function (feature, resolution) {
-        if (mapScale() < 1000000) {
-            return [
-                new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#000000', width: 6.000000 }) }),
-                new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#FFFF00', width: 2.000000 }) }),
-                new ol.style.Style({ text: new ol.style.Text({ text: feature.get('label')['1000000'], font: ' 20pt sans-serif', fill: new ol.style.Fill({ color: '#FFFF00' }), stroke: new ol.style.Stroke({ color: '#000000', width: 4.0 }), offsetX: 14, textAlign: 'start', textBaseline: 'alphabetic' }) })
-            ]
-        }
-    };
-
-
-    function addVectorLayer(jsondata, layerIndex, layerProj, styles) {
-        //	var geoJSONFormat = new ol.format.GeoJSON({defaultDataProjection: layerProj});
-        var mp = new ol.Map({
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM(),
-                }),
-            ],
-            target: 'visElement',
-            view: new ol.View({
-                center: ol.proj.fromLonLat([-72.809594, 43.979433]),
-                zoom: 7,
-            }),
-        });
-        var geoJSONFormat = new ol.format.GeoJSON({ dataProjection: layerProj });
-        var newLayer = new ol.layer.Vector({
-            style: styles,
-            source: new ol.source.Vector({
-                strategy: ol.loadingstrategy.bbox,
-                loader: function (extent, resolution, proj) {
-                    var convertedExtent = ol.proj.transformExtent(extent, proj, layerProj);
-                    var vectorSource = this
-                    //				var promise = jsonPromise(layerIndex, convertedExtent)
-                    //				promise.then(function(jsonString, errorString) {
-                    //					if ( jsonString ) {
-                    jsonString = jsondata;
-                    var features = [];
-                    try {
-                        features = geoJSONFormat.readFeatures(jsonString, {
-                            featureProjection: proj,
-                        });
-                        if (features.length) {
-                            vectorSource.addFeatures(features);
-                            console.log("ADDED FEATURES FROM PROMISED JSON: " + jsonString)
-                        }
-                    } catch (err) {
-                        console.log("Failed to add features from JSON:");
-                        console.log(jsonString);
-                        console.log(err);
-                    }
-                    //					} else if ( errorString ) {
-                    //						console.log(errorString)
-                    //					}
-                    //				}, function(err) {
-                    //					console.log(err)
-                    //				});
-                },
-            }),
-        });
-        vectorLayers[layerIndex] = newLayer;  //  NB:  Integer is automatically converted to string here for dictionary indexing
-
-        mp.addLayer(newLayer);
-
-        return newLayer;
-    }
-
-    function redrawLayer(layer) {
-        console.log("REDRAWING LAYER");
-        //    layer.getSource().clear(true);
-        //    layer.getSource().changed();
-        layer.getSource().refresh();
-    }
-
-    */
-    // Function to transform coordinates from EPSG:3857 to EPSG:4326
-    function transformCoordinates(coordinates) {
-        return ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
-    }
-
-    // Function to convert transformed coordinates to WKT format
-    function convertPolygonToWKT(coordinates) {
-        var format = new ol.format.WKT();
-        var polygon = new ol.geom.Polygon([coordinates]);
-        return format.writeGeometry(polygon);
-    }
 
     var map;
 
@@ -147,7 +20,6 @@ jQuery(document).ready(function () {
                 })
             ],
             view: new ol.View({
-                //center: ol.proj.fromLonLat([-72.809594, 43.979433]),
                 center: [-72.809594, 43.979433],
                 zoom: 7,
                 projection: 'EPSG:4326'
@@ -155,13 +27,13 @@ jQuery(document).ready(function () {
         });
     }
 
+    // Initialize the map
+    initMap();
+
     var draw; // Declare draw globally
 
     // Function to start drawing on the map
     function startDrawing() {
-
-        //if (!drawActive) return; // Do nothing if drawing is not active
-
         //Remove existing draw interaction if any
         map.getInteractions().forEach(function (interaction) {
             if (interaction instanceof ol.interaction.Draw) {
@@ -170,11 +42,12 @@ jQuery(document).ready(function () {
         });
 
         // Create a new vector source if not already created
-        var source = map.getLayers().getArray()[1].getSource();
+        // Get the empty vector layer (layer 1) that was created in initMap
+        var vectorLayer = map.getLayers().getArray()[1];
+        var source = vectorLayer.getSource();
 
         // Create a new draw interaction
         draw = new ol.interaction.Draw({
-            //source: new ol.source.Vector(),
             source: source,
             type: 'Polygon' // Allow users to draw polygons
         });
@@ -199,12 +72,7 @@ jQuery(document).ready(function () {
             // Disable spatial filters
             $('input[name=spatialfilterradio]').attr("disabled", true);
         });
-        
-
     }
-
-    // Initialize the map
-    initMap();
 
     // Event listener for the draw button click
     $('#drawonmap').change(function () {
