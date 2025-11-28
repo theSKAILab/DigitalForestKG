@@ -2,6 +2,16 @@ jQuery(document).ready(function () {
 
     $("#loading-message").hide()
 
+    /* For spinner */
+    $('#preferences-spinner').hide();
+    $(document).ajaxStop(function () {
+        $('#preferences-spinner').hide();
+    });
+
+    $(document).ajaxStart(function () {
+        $('#preferences-spinner').show();
+    });
+
     var map;
 
     // Initialize the map
@@ -124,6 +134,7 @@ jQuery(document).ready(function () {
 
     // Add change event listener to the parent container
     $('#treesWithPreferencesgroup').on('change', 'input[type="radio"]', function () {
+
         // Check if the radio button is checked
         if ($(this).is(':checked')) {
             // Get the value of the checked radio button
@@ -168,6 +179,7 @@ jQuery(document).ready(function () {
                     $('.pref-table-window').show();
                 },
             });
+
         }
     });
 
@@ -226,7 +238,7 @@ jQuery(document).ready(function () {
     }
 
     // Define the color range and feasibility thresholds
-    var feasibilityColors = ["#FF0000", "#FFA500", "#ADD8E6", "#008000", "#006400"];  // Red to Dark Green
+    var feasibilityColors = ["#004D40", "#01019B", "#FFA500", "#FF7D00", "#D81B60"];  // Pink to Dark Green
     var thresholds = [0, 0.25, 0.5, 0.75, 1];  // Quantile thresholds
 
     // Function to get the color based on feasibility value
@@ -328,11 +340,11 @@ jQuery(document).ready(function () {
                 var legendHtml = `
                 <div class="map-legend" id="map-legend">
                     <h4>Feasibility</h4>
-                    <div><span style="background-color:#FF0000;"></span> Low</div>
-                    <div><span style="background-color:#FFA500;"></span> Low-Medium</div>
-                    <div><span style="background-color:#ADD8E6;"></span> Medium</div>
-                    <div><span style="background-color:#008000;"></span> Medium-High</div>
-                    <div><span style="background-color:#006400;"></span> High</div>
+                    <div><span style="background-color:#D81B60;"></span> High</div>
+                    <div><span style="background-color:#FF7D00;"></span> Medium-High</div>
+                    <div><span style="background-color:#FFA500;"></span> Medium</div>
+                    <div><span style="background-color:#01019B;"></span> Low-Medium</div>
+                    <div><span style="background-color:#004D40;"></span> Low</div>
                 </div>`;
                 $('#visElement').append(legendHtml);
             })
