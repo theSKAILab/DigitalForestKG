@@ -797,7 +797,7 @@ def inventoryyear():
         year = result["year"]["value"]
         start_years.append(year)
 
-    #return jsonify({'inventoryyearlisthtml':render_template('treeInventoryTaskloops.html', year_list=inventoryyear_list)})
+    #return jsonify({'inventoryyearlisthtml':render_template('treeInventoryTaskLoops.html', year_list=inventoryyear_list)})
     return jsonify({'startYears': start_years})
 
 @app.route('/get_end_years', methods=['POST'])
@@ -858,7 +858,7 @@ def family():
         sname = result["sname"]["value"]
         family_list.append([cname, sname])
 
-    return jsonify({'familylisthtml':render_template('treeInventoryTaskloops.html', family_list=family_list)})
+    return jsonify({'familylisthtml':render_template('treeInventoryTaskLoops.html', family_list=family_list)})
 
 @app.route('/genus', methods=['GET', 'POST'])
 def genus():
@@ -889,7 +889,7 @@ def genus():
         sname = result["sname"]["value"]
         genus_list.append([cname, sname])
 
-    return jsonify({'genuslisthtml':render_template('treeInventoryTaskloops.html', genus_list=genus_list)})
+    return jsonify({'genuslisthtml':render_template('treeInventoryTaskLoops.html', genus_list=genus_list)})
 
 @app.route('/species', methods=['GET', 'POST'])
 def species():
@@ -920,7 +920,7 @@ def species():
         sname = result["sname"]["value"]
         species_list.append([cname, sname])
 
-    return jsonify({'specieslisthtml':render_template('treeInventoryTaskloops.html', species_list=species_list)})
+    return jsonify({'specieslisthtml':render_template('treeInventoryTaskLoops.html', species_list=species_list)})
 
 @app.route('/treeclassmap', methods=['POST'])
 def treeclassmap():
