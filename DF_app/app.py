@@ -386,6 +386,40 @@ def treepreferencestask():
 
     return render_template('treePreferencesTask.html')
 
+@app.route('/all_areas', methods=['GET'])
+def all_areas():
+    """
+    Fetch all counties from GeoJSON file and assign colors
+    """
+    import json
+    
+    # Load the counties GeoJSON file
+    geojson_path = 'static/Counties_ME.geojson'
+    
+    try:
+        with open(geojson_path, 'r') as f:
+            counties_geojson = json.load(f)
+        
+        # Color palette: diverse set of colors for visual separation
+        colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#ABEBC6',
+            '#F5A9A9', '#95E1D3', '#A3CB38', '#F8A5C8', '#81ECEC',
+            '#FAD7A0', '#D7BDE2', '#A9DFBF', '#F9E79F', '#FADBD8',
+            '#D5DBDB', '#D2EBF0', '#FCF3CF', '#EBDEF0', '#E8DAEF'
+        ]
+        
+        # Assign colors to each feature
+        if 'features' in counties_geojson:
+            for idx, feature in enumerate(counties_geojson['features']):
+                feature['properties']['color'] = colors[idx % len(colors)]
+        
+        return jsonify({'all_areas_geoj': json.dumps(counties_geojson)})
+    
+    except Exception as e:
+        print(f"Error loading counties GeoJSON: {e}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/userpara', methods=['POST'])
 def userpara():
 
@@ -1525,5 +1559,3 @@ def feasibiltycheck():
 
     return jsonify({'html_map':html_map})
 '''
-if __name__ == "__main__":
-    app.run(debug=True)

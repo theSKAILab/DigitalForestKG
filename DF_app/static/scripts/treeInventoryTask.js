@@ -12,6 +12,7 @@ jQuery(document).ready(function () {
     });
 
     var map;
+    var dataLayerCount = 0; // Track data layers for easy removal
 
     // Initialize the map
     function initMap() {
@@ -26,16 +27,108 @@ jQuery(document).ready(function () {
                 })
             ],
             view: new ol.View({
-                //center: ol.proj.fromLonLat([-72.809594, 43.979433]),
-                center: [-72.809594, 43.979433],
+                center: ol.proj.fromLonLat([-72.809594, 43.979433]),
                 zoom: 7,
-                projection: 'EPSG:4326'
+                projection: 'EPSG:3857'
             })
         });
     }
 
     // Initialize the map
     initMap();
+
+    // Function to load all areas (counties) on page load
+    function loadAllAreas() {
+        $.ajax({
+            url: '/all_areas',
+            type: 'GET',
+            traditional: true,
+            success: function (data) {
+                console.log('All areas loaded:', data);
+                
+                var allAreasGeoJSON = data.all_areas_geoj;
+                console.log('GeoJSON data:', allAreasGeoJSON);
+                
+                try {
+                    // Parse GeoJSON if it's a string
+                    var geoJSONObj = typeof allAreasGeoJSON === 'string' ? JSON.parse(allAreasGeoJSON) : allAreasGeoJSON;
+                    console.log('Parsed GeoJSON:', geoJSONObj);
+                    
+                    // Create a vector source from all areas GeoJSON
+                    var vectorSource_allAreas = new ol.source.Vector({
+                        features: new ol.format.GeoJSON().readFeatures(geoJSONObj, {
+                            dataProjection: 'EPSG:4326',
+                            featureProjection: 'EPSG:3857'
+                        })
+                    });
+                    
+                    console.log('Number of features:', vectorSource_allAreas.getFeatures().length);
+
+                    // Style function that uses the color property from each feature
+                    var styleFunction = function(feature) {
+                        var color = feature.get('color') || '#CCCCCC'; // Default gray if no color
+                        var countyName = feature.get('COUNTY') || '';
+                        
+                        // Convert hex color to rgba with reduced opacity (40%)
+                        var rgbaColor = hexToRgba(color, 0.4);
+                        
+                        return new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: rgbaColor
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#1a1a1a', // Darker black for borders
+                                width: 2.5,
+                                lineDash: [0] // Solid line
+                            }),
+                            text: new ol.style.Text({
+                                text: countyName,
+                                font: 'bold 12px Arial',
+                                fill: new ol.style.Fill({
+                                    color: '#FFFFFF'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#1a1a1a',
+                                    width: 4
+                                }),
+                                offsetY: 0,
+                                overflow: false,
+                                placement: 'point'
+                            }),
+                            zIndex: 1000
+                        });
+                    };
+
+                    // Helper function to convert hex to rgba
+                    var hexToRgba = function(hex, alpha) {
+                        var r = parseInt(hex.slice(1, 3), 16);
+                        var g = parseInt(hex.slice(3, 5), 16);
+                        var b = parseInt(hex.slice(5, 7), 16);
+                        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+                    };
+
+                    // Vector layer for all areas
+                    var vectorLayer_allAreas = new ol.layer.Vector({
+                        source: vectorSource_allAreas,
+                        style: styleFunction,
+                        zIndex: 1000
+                    });
+
+                    // Add the layer to the map (add to bottom, after base layer)
+                    map.addLayer(vectorLayer_allAreas);
+                    console.log('All areas layer added to map');
+                } catch (error) {
+                    console.error('Error processing all areas data:', error);
+                }
+            },
+            error: function (error) {
+                console.error('Error loading all areas:', error);
+            }
+        });
+    }
+
+    // Load all areas (counties) on page load
+    loadAllAreas();
 
     // Get inventory years from data
     $.ajax({
@@ -263,20 +356,25 @@ jQuery(document).ready(function () {
 
     function createmap(treedata, envdata) {
 
-        // Initialize the map
-        const treemap = new ol.Map({
-            target: 'visElement',
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM()
-                })
-            ],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([-69.255629, 45.621178]), // Convert lon/lat to EPSG:3857 ,
-                zoom: 7,
-                projection: 'EPSG:3857' // Use default projection for OpenLayers
-            })
+        // Remove only data layers from previous map generations, keep county layer
+        const layersToRemove = [];
+        map.getLayers().forEach(function(layer, index) {
+            // Keep layers 0-2 (OSM base layer, empty vector layer, and county layer)
+            // Remove any layers added by previous data generations (index > 2)
+            if (index > 2) {
+                layersToRemove.push(layer);
+            }
         });
+        layersToRemove.forEach(function(layer) {
+            map.removeLayer(layer);
+        });
+
+        // Clear previous legends
+        $('.choropleth-legend').remove();
+        $('#map-legend').remove();
+
+        // Use the existing map instead of creating a new one
+        const treemap = map;
 
         // Create choropleth map
         if (isGeoJSON(envdata)) {
@@ -718,10 +816,7 @@ jQuery(document).ready(function () {
                 console.log(treedata)
                 console.log(envdata)
 
-                // Clear current map content
-                $('#visElement').empty();
-
-                // Initialize a new map view
+                // Add data layers to existing map (don't clear it)
                 createmap(treedata, envdata);
 
                 // Add legend

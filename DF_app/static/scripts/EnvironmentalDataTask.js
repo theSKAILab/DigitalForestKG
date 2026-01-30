@@ -171,7 +171,6 @@ jQuery(document).ready(function () {
                 })
             ],
             view: new ol.View({
-                //center: ol.proj.fromLonLat([-72.809594, 43.979433]),
                 center: [-72.809594, 43.979433],
                 zoom: 7,
                 projection: 'EPSG:4326'
@@ -179,13 +178,13 @@ jQuery(document).ready(function () {
         });
     }
 
+    // Initialize the map
+    initMap();
+
     var draw; // Declare draw globally
 
     // Function to start drawing on the map
     function startDrawing() {
-
-        //if (!drawActive) return; // Do nothing if drawing is not active
-
         //Remove existing draw interaction if any
         map.getInteractions().forEach(function (interaction) {
             if (interaction instanceof ol.interaction.Draw) {
@@ -194,11 +193,12 @@ jQuery(document).ready(function () {
         });
 
         // Create a new vector source if not already created
-        var source = map.getLayers().getArray()[1].getSource();
+        // Get the empty vector layer (layer 1) that was created in initMap
+        var vectorLayer = map.getLayers().getArray()[1];
+        var source = vectorLayer.getSource();
 
         // Create a new draw interaction
         draw = new ol.interaction.Draw({
-            //source: new ol.source.Vector(),
             source: source,
             type: 'Polygon' // Allow users to draw polygons
         });
@@ -223,12 +223,7 @@ jQuery(document).ready(function () {
             // Disable spatial filters
             $('input[name=spatialfilterradio]').attr("disabled", true);
         });
-        
-
     }
-
-    // Initialize the map
-    initMap();
 
     // Event listener for the draw button click
     $('#drawonmap').change(function () {
