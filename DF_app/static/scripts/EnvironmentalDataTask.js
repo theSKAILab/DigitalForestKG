@@ -4,6 +4,16 @@ jQuery(document).ready(function () {
     $("#environmentalfilters").hide();
     $('.slider').hide();
     $('.classgroup').hide();
+    
+    /* For spinner */
+    $('#environmental-spinner').hide();
+    $(document).ajaxStop(function () {
+        $('#environmental-spinner').hide();
+    });
+    $(document).ajaxStart(function () {
+        $('#environmental-spinner').show();
+    });
+
     /*
     var map = new ol.Map({
         layers: [
@@ -120,6 +130,7 @@ jQuery(document).ready(function () {
     }
 
     */
+
     // Function to transform coordinates from EPSG:3857 to EPSG:4326
     function transformCoordinates(coordinates) {
         return ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
@@ -133,6 +144,19 @@ jQuery(document).ready(function () {
     }
 
     var map;
+
+    function createmaplegend() {
+        // Color legend
+        const legendHtml = `
+                <div class="map-legend" id="map-legend">
+                    <div>
+                    <h5>Map Legend</h5>
+                    <div><span style="background-color:orange; width:20px; height:10px; display:inline-block;"></span> Selected criteria satisfied </div>
+                    <div><span style="background-color:blue; width:20px; height:10px; display:inline-block;"></span> Selected criteria not statisfied </div>
+                    </div>
+                </div >`;
+        $('#visElement').append(legendHtml);
+    }
 
     // Initialize the map
     function initMap() {
@@ -313,12 +337,15 @@ jQuery(document).ready(function () {
                 url: '/minmax',
                 traditional: true,
                 success: function (data) {
+                    var min = Number(data.datamin);
+                    var max = Number(data.datamax)
                     sliderDiv.noUiSlider.updateOptions({
                         range: {
-                            'min': Number(data.datamin),
-                            'max': Number(data.datamax)
+                            'min': min,
+                            'max': max
                         },
                     });
+                    sliderDiv.noUiSlider.set([min, max])
                     $(sliderDiv).show(); // Show the slider div
                 }
             });
@@ -527,22 +554,22 @@ jQuery(document).ready(function () {
                 // Define a style for the selected region polygons (orange)
                 var Style_selectedRegion = new ol.style.Style({
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 165, 0, 1)' // Orange fill color
+                        color: 'rgba(0, 0, 255, 1)' // Blue fill color
                     }),
                     stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.1)', // Black stroke
-                        width: 0.01
+                        color: 'rgba(0, 0, 0, 1)', // Black stroke
+                        width: 0.05
                     })
                 });
 
                 // Define a style for the filtered region polygons (red)
                 var Style_filteredRegion = new ol.style.Style({
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 0, 0, 1)' // Red fill color
+                        color: 'rgba(255, 125, 0, 1)' // Orange fill color
                     }),
                     stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.1)', // Black stroke
-                        width: 0.01
+                        color: 'rgba(0, 0, 0, 1)', // Black stroke
+                        width: 0.05
                     })
                 });
 
@@ -563,12 +590,15 @@ jQuery(document).ready(function () {
                 new_map.addLayer(vectorLayer_filteredRegion);
 
                 $(".layer-filters").hide();
+                createmaplegend();
+
             })
             .catch(function (error) {
                 // Catch block to handle errors from any `.then()` in the chain
                 console.error('Error occurred:', error);
             });
     });
+
 });
 
 

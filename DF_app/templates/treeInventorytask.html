@@ -4,6 +4,29 @@
 
 <div class="map-content" id="visElement"> </div>
 
+<!-- Spinner -->
+<div class="spinner-border custom-spinner" role="status" id="inventory-spinner">
+        <span class="visually-hidden">Loading...</span>
+</div>
+
+<div class='instructions-outer'>
+    <div>
+        <button id="hideinstructions" data-bs-toggle="collapse" data-bs-target="#inventory-instructions">Hide/Show instructions</button>
+    </div>
+    <div class="instructions-content collapse show" id="inventory-instructions"> 
+        <p><b>This page allows you to see the distribution of one or more types of trees with specific properties in Maine in a specific time period.</b></p>
+        <p>For example, you can use this page to view the distribution of pine trees with diameter at breast between 20 and 25 in 2012.  You can select individual species or families of tree to view, then you can choose to constrain the trees based on certain properties (e.g. diameter at breast height, or whether they are alive or dead).  You will also choose a start and end year.  The resulting distribution map will be colored by the number of specified trees present in that area during the time period.</p>
+        <p><b>To use this page:</b>
+            <ol>
+            <li>Select a start and end year from the inventory year start and end drop down menus.</li>
+            <li>Select a type or category of tree species.  You can expand a category of trees (e.g. gymnosperms, pine family) by selecting the green plus signs on the left side, and you can select a category of trees by clicking the name (the category name will appear highlighted in green when selected).</li>
+            <li>Next, you may optionally choose to specify trees in your selected category with certain properties (e.g. tree total height) by clicking the check box next to the property name.</li> 
+            <li>Once selected, you will see a slider or a list of options for that property.  Select the values that you want to be shown in the prevalence map.</li>
+            <li>Press generate map and wait for the prevalence map to appear.</li>
+            </ol></p>
+    </div>
+</div>
+
 
 <div class="filter-content">
     <img class="d-block mx-auto mb-4" src="/static/images/INSPIRES_logo.png" alt="" width="72" height="57">
@@ -31,7 +54,7 @@
     <h6>Inventory Year</h6>
     <div class="input-group mb-3">
         <div class="input-group-prepend" id="inventoryyearcheckbox">
-            <label class="input-group-text" for="inputGroupSelect01">Start</label>
+            <label class="input-group-text" for="inputGroupSelect01">From</label>
         </div>
         <select class="form-select" id="sel_year">
             <option id="selyearinitial" selected>Select</option>
@@ -39,7 +62,7 @@
     </div>
     <div class="input-group mb-3">
         <div class="input-group-prepend" id="inventoryyearcheckbox2">
-            <label class="input-group-text" for="inputGroupSelect01">End</label>
+            <label class="input-group-text" for="inputGroupSelect01">To</label>
         </div>
         <select class="form-select" id="sel_year2">
             <option id="selyearinitial2" selected>Select</option>
@@ -49,13 +72,13 @@
     <div class="container">
         <div class="level-one-box">
             <button class="plusminuslevelonebutton" type="button" id="angiospermfamily"><span></span></button>
-            <button class="text-button-levelone taxbutton" cname="angiosperms" sname="Magnoliopsida" value="NCBITaxon_3398" id="angiosperms">Angiosperms</button>
+            <button class="text-button-levelone taxbutton" cname="angiosperms" sname="Magnoliopsida" value="NCBITaxon_3398" id="angiosperms">Hardwood</button>
         </div>
         <div class="level-two-filter-box" id="angiospermfamilygroup"></div>
         <hr>
         <div class="level-one-box">
             <button class="plusminuslevelonebutton" type="button" id="gymnospermfamily"><span></span></button>
-            <button class="text-button-levelone taxbutton" cname="gymnosperms" sname="Acrogymnospermae" value="NCBITaxon_1437180" id="gymnosperms">Gymnosperms</button>
+            <button class="text-button-levelone taxbutton" cname="gymnosperms" sname="Acrogymnospermae" value="NCBITaxon_1437180" id="gymnosperms">Softwood</button>
         </div>
         <div class="level-two-filter-box" id="gymnospermfamilygroup"></div>
     </div>
@@ -100,6 +123,8 @@
                 <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="tsgroup"></div>
             </div>
         </div>
+
+        <!-- Abundance isn't loading
         <hr>
         <h6>Metric</h6>
         <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -110,8 +135,8 @@
             <label class="btn btn-outline-primary" for="metricbtnradio2">Presence/Absence</label>
         </div>
     </div>
-    <hr>
-    <div class="container non-spatial-filters" id="environmentalfilters">
+    <hr>-->
+    <!-- <div class="container non-spatial-filters" id="environmentalfilters">
         <h6>Add Environmental Property Layer</h6>
         <hr>
         <div class="level-one-box">
@@ -384,7 +409,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <hr>
     <button class="btn btn-primary" id="generateMapButton" type="button">Generate Map</button>
 </div>
