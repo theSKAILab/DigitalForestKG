@@ -1,6 +1,16 @@
 jQuery(document).ready(function () {
 
 
+    /* For spinner */
+    $('#inventory-spinner').hide();
+    $(document).ajaxStop(function () {
+        $('#inventory-spinner').hide();
+    });
+
+    $(document).ajaxStart(function () {
+        $('#inventory-spinner').show();
+    });
+
     var map;
     var dataLayerCount = 0; // Track data layers for easy removal
 
@@ -127,6 +137,7 @@ jQuery(document).ready(function () {
         success: function (response) {
             // Clear the current options in end_year
             $('#sel_year').empty();
+            $('#sel_year').append(`<option value="Select">Select</option>`);
 
             // Populate the new options from the response
             response.startYears.forEach(function (year) {
@@ -158,6 +169,7 @@ jQuery(document).ready(function () {
                 success: function (response) {
                     // Clear the current options in end_year
                     $('#sel_year2').empty();
+                    $('#sel_year2').append(`<option value="Select">Select</option>`);
 
                     // Populate the new options from the response
                     response.endYears.forEach(function (year) {
@@ -559,12 +571,20 @@ jQuery(document).ready(function () {
 
         // Define a color scale based on min and max treecount values
         function getColor(treecount) {
+            if (treecount < 3) return '#004D40';
+            if (treecount < 10) return '#D81B60';
+            if (treecount < 20) return '#FF7D00';
+            if (treecount < 50) return '#FFA500';
+            return '#01019B';
+
+            /**
             const normalized = (treecount - tmin) / (tmax - tmin);
-            if (normalized < 0.25) return 'red';
-            if (normalized < 0.5) return 'orange';
-            if (normalized < 0.75) return 'yellow';
-            if (normalized <= 1) return 'green';
-            return 'darkgreen';
+            if (normalized < 0.25) return '#D81B60';
+            if (normalized < 0.5) return '#FF7D00';
+            if (normalized < 0.75) return '#FFA500';
+            if (normalized <= 1) return '#01019B';
+            return '#004D40';
+            */
         }
 
         // Loop through each feature to create OpenLayers features with style
@@ -610,10 +630,11 @@ jQuery(document).ready(function () {
                 <div class="map-legend" id="map-legend">
                     <div>
                     <h5>${filtdata.year} Inventory of ${filtdata.cname} in Maine</h5>
-                    <div><span style="background-color:red; width:20px; height:10px; display:inline-block;"></span> 25th percentile </div>
-                    <div><span style="background-color:orange; width:20px; height:10px; display:inline-block;"></span> 50th percentile </div>
-                    <div><span style="background-color:yellow; width:20px; height:10px; display:inline-block;"></span> 75th percentile </div>
-                    <div><span style="background-color:green; width:20px; height:10px; display:inline-block;"></span> 1ooth percentile </div>
+                    <div><span style="background-color:#004D40; width:20px; height:10px; display:inline-block;"></span> 1-2 </div>
+                    <div><span style="background-color:#01019B; width:20px; height:10px; display:inline-block;"></span> 3-9 </div>
+                    <div><span style="background-color:#FFA500; width:20px; height:10px; display:inline-block;"></span> 10-19 </div>
+                    <div><span style="background-color:#FF7D00; width:20px; height:10px; display:inline-block;"></span> 20-49 </div>
+                    <div><span style="background-color:#D81B60; width:20px; height:10px; display:inline-block;"></span> 50+ </div>
                     </div>
                     <div>
                     <h6>Range<h6>
@@ -647,7 +668,7 @@ jQuery(document).ready(function () {
         // Add highlight to the clicked button
         $(this).addClass("highlighted");
 
-        filtdata.cname = $(this).attr('cname');
+        filtdata. cname = $(this).attr('cname');
         var e = document.getElementById("sel_year");
         filtdata.year = e.options[e.selectedIndex].text;
         console.log(filtdata)
@@ -762,7 +783,7 @@ jQuery(document).ready(function () {
 
     $("#generateMapButton").on("click", function () {
 
-        filtdata.selectedmetric = $('input[name="metricbtnradio"]:checked').val();
+        filtdata.selectedmetric = 'presenceAbsence' ; //$('input[name="metricbtnradio"]:checked').val();
 
         // Helper function to get slider range if checkbox is checked
         function getSliderRange(checkbox, slider) {

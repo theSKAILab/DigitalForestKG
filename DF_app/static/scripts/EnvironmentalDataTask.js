@@ -4,8 +4,159 @@ jQuery(document).ready(function () {
     $("#environmentalfilters").hide();
     $('.slider').hide();
     $('.classgroup').hide();
+    
+    /* For spinner */
+    $('#environmental-spinner').hide();
+    $(document).ajaxStop(function () {
+        $('#environmental-spinner').hide();
+    });
+    $(document).ajaxStart(function () {
+        $('#environmental-spinner').show();
+    });
+
+    /*
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+            source: new ol.source.OSM()
+            })
+        ],
+        target: 'visElement',
+        view: new ol.View({
+            center: ol.proj.transform([43.979433, -72.809594], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 7
+        })
+    });
+    */
+
+    //var useGeographic = new ol.proj.useGeographic();
+    /*
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM(),
+            }),
+        ],
+        target: 'visElement',
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-72.809594, 43.979433]),
+            zoom: 7,
+        }),
+    });
+
+    var vectorLayers = {};
+    var dpi = 72;
+
+    function mapScale() {
+        var unit = map.getView().getProjection().getUnits();
+        var resolution = map.getView().getResolution();
+        var inchesPerMetre = 39.37;
+
+        return resolution * map.getView().getProjection().getMetersPerUnit() * inchesPerMetre * dpi;
+    }
+
+    var layerStyles = function (feature, resolution) {
+        if (mapScale() < 1000000) {
+            return [
+                new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#000000', width: 6.000000 }) }),
+                new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#FFFF00', width: 2.000000 }) }),
+                new ol.style.Style({ text: new ol.style.Text({ text: feature.get('label')['1000000'], font: ' 20pt sans-serif', fill: new ol.style.Fill({ color: '#FFFF00' }), stroke: new ol.style.Stroke({ color: '#000000', width: 4.0 }), offsetX: 14, textAlign: 'start', textBaseline: 'alphabetic' }) })
+            ]
+        }
+    };
+
+
+    function addVectorLayer(jsondata, layerIndex, layerProj, styles) {
+        //	var geoJSONFormat = new ol.format.GeoJSON({defaultDataProjection: layerProj});
+        var mp = new ol.Map({
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM(),
+                }),
+            ],
+            target: 'visElement',
+            view: new ol.View({
+                center: ol.proj.fromLonLat([-72.809594, 43.979433]),
+                zoom: 7,
+            }),
+        });
+        var geoJSONFormat = new ol.format.GeoJSON({ dataProjection: layerProj });
+        var newLayer = new ol.layer.Vector({
+            style: styles,
+            source: new ol.source.Vector({
+                strategy: ol.loadingstrategy.bbox,
+                loader: function (extent, resolution, proj) {
+                    var convertedExtent = ol.proj.transformExtent(extent, proj, layerProj);
+                    var vectorSource = this
+                    //				var promise = jsonPromise(layerIndex, convertedExtent)
+                    //				promise.then(function(jsonString, errorString) {
+                    //					if ( jsonString ) {
+                    jsonString = jsondata;
+                    var features = [];
+                    try {
+                        features = geoJSONFormat.readFeatures(jsonString, {
+                            featureProjection: proj,
+                        });
+                        if (features.length) {
+                            vectorSource.addFeatures(features);
+                            console.log("ADDED FEATURES FROM PROMISED JSON: " + jsonString)
+                        }
+                    } catch (err) {
+                        console.log("Failed to add features from JSON:");
+                        console.log(jsonString);
+                        console.log(err);
+                    }
+                    //					} else if ( errorString ) {
+                    //						console.log(errorString)
+                    //					}
+                    //				}, function(err) {
+                    //					console.log(err)
+                    //				});
+                },
+            }),
+        });
+        vectorLayers[layerIndex] = newLayer;  //  NB:  Integer is automatically converted to string here for dictionary indexing
+
+        mp.addLayer(newLayer);
+
+        return newLayer;
+    }
+
+    function redrawLayer(layer) {
+        console.log("REDRAWING LAYER");
+        //    layer.getSource().clear(true);
+        //    layer.getSource().changed();
+        layer.getSource().refresh();
+    }
+
+    */
+
+    // Function to transform coordinates from EPSG:3857 to EPSG:4326
+    function transformCoordinates(coordinates) {
+        return ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+    }
+
+    // Function to convert transformed coordinates to WKT format
+    function convertPolygonToWKT(coordinates) {
+        var format = new ol.format.WKT();
+        var polygon = new ol.geom.Polygon([coordinates]);
+        return format.writeGeometry(polygon);
+    }
 
     var map;
+
+    function createmaplegend() {
+        // Color legend
+        const legendHtml = `
+                <div class="map-legend" id="map-legend">
+                    <div>
+                    <h5>Map Legend</h5>
+                    <div><span style="background-color:orange; width:20px; height:10px; display:inline-block;"></span> Selected criteria satisfied </div>
+                    <div><span style="background-color:blue; width:20px; height:10px; display:inline-block;"></span> Selected criteria not statisfied </div>
+                    </div>
+                </div >`;
+        $('#visElement').append(legendHtml);
+    }
 
     // Initialize the map
     function initMap() {
@@ -181,12 +332,15 @@ jQuery(document).ready(function () {
                 url: '/minmax',
                 traditional: true,
                 success: function (data) {
+                    var min = Number(data.datamin);
+                    var max = Number(data.datamax)
                     sliderDiv.noUiSlider.updateOptions({
                         range: {
-                            'min': Number(data.datamin),
-                            'max': Number(data.datamax)
+                            'min': min,
+                            'max': max
                         },
                     });
+                    sliderDiv.noUiSlider.set([min, max])
                     $(sliderDiv).show(); // Show the slider div
                 }
             });
@@ -395,22 +549,22 @@ jQuery(document).ready(function () {
                 // Define a style for the selected region polygons (orange)
                 var Style_selectedRegion = new ol.style.Style({
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 165, 0, 1)' // Orange fill color
+                        color: 'rgba(0, 0, 255, 1)' // Blue fill color
                     }),
                     stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.1)', // Black stroke
-                        width: 0.01
+                        color: 'rgba(0, 0, 0, 1)', // Black stroke
+                        width: 0.05
                     })
                 });
 
                 // Define a style for the filtered region polygons (red)
                 var Style_filteredRegion = new ol.style.Style({
                     fill: new ol.style.Fill({
-                        color: 'rgba(255, 0, 0, 1)' // Red fill color
+                        color: 'rgba(255, 125, 0, 1)' // Orange fill color
                     }),
                     stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.1)', // Black stroke
-                        width: 0.01
+                        color: 'rgba(0, 0, 0, 1)', // Black stroke
+                        width: 0.05
                     })
                 });
 
@@ -431,12 +585,15 @@ jQuery(document).ready(function () {
                 new_map.addLayer(vectorLayer_filteredRegion);
 
                 $(".layer-filters").hide();
+                createmaplegend();
+
             })
             .catch(function (error) {
                 // Catch block to handle errors from any `.then()` in the chain
                 console.error('Error occurred:', error);
             });
     });
+
 });
 
 
