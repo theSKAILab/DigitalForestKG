@@ -379,7 +379,7 @@ def environmentalDataTask():
 @app.route('/treeinventorytask')
 def treeinventorytask():
 
-    return render_template('treeInventorytask.html')
+    return render_template('treeInventoryTask.html')
 
 @app.route('/treepreferencestask')
 def treepreferencestask():

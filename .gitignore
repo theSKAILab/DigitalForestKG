@@ -1,2 +1,4 @@
 .*
 !.gitignore
+!.env  # Usually excluded, so as not to put credentials in the repository;
+# but in this case needed for other environment variables and for non-secure credentials.
