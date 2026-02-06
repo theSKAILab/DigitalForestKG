@@ -28,7 +28,7 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # SPARQL ENDPOINT
-sparql_endpoint = SPARQLWrapper("https://gdb.acg.maine.edu:7202/repositories/DigitalForestGraph")
+sparql_endpoint = SPARQLWrapper("https://gdb.acg.maine.edu:7200/repositories/DigitalForestGraph")
 sparql_endpoint.setCredentials("digital-forest-endpoint", "skailab")
 sparql_endpoint.setMethod(POST)
 
@@ -386,40 +386,6 @@ def treepreferencestask():
 
     return render_template('treePreferencesTask.html')
 
-@app.route('/all_areas', methods=['GET'])
-def all_areas():
-    """
-    Fetch all counties from GeoJSON file and assign colors
-    """
-    import json
-    
-    # Load the counties GeoJSON file
-    geojson_path = 'static/Counties_ME.geojson'
-    
-    try:
-        with open(geojson_path, 'r') as f:
-            counties_geojson = json.load(f)
-        
-        # Color palette: diverse set of colors for visual separation
-        colors = [
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
-            '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#ABEBC6',
-            '#F5A9A9', '#95E1D3', '#A3CB38', '#F8A5C8', '#81ECEC',
-            '#FAD7A0', '#D7BDE2', '#A9DFBF', '#F9E79F', '#FADBD8',
-            '#D5DBDB', '#D2EBF0', '#FCF3CF', '#EBDEF0', '#E8DAEF'
-        ]
-        
-        # Assign colors to each feature
-        if 'features' in counties_geojson:
-            for idx, feature in enumerate(counties_geojson['features']):
-                feature['properties']['color'] = colors[idx % len(colors)]
-        
-        return jsonify({'all_areas_geoj': json.dumps(counties_geojson)})
-    
-    except Exception as e:
-        print(f"Error loading counties GeoJSON: {e}")
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/userpara', methods=['POST'])
 def userpara():
 
@@ -550,7 +516,7 @@ def userpara():
     if mat_key in processeddata:
         sel_mat = processeddata['mat']
         mat_query = """[] a dfds:CLNA_AnnualMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?mat].
         FILTER (?mat >= %s && ?mat <= %s)""" % (sel_mat[0], sel_mat[1])
 
@@ -560,7 +526,7 @@ def userpara():
     if tavesm_key in processeddata:
         sel_tavesm = processeddata['tavesm']
         tavesm_query = """[] a dfds:CLNA_SummerMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?tavesm].
         FILTER (?tavesm >= %s && ?tavesm <= %s)""" % (sel_tavesm[0], sel_tavesm[1])
 
@@ -570,7 +536,7 @@ def userpara():
     if tavewt_key in processeddata:
         sel_tavewt = processeddata['tavewt']
         tavewt_query = """[] a dfds:CLNA_WinterMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?tavewt].
         FILTER (?tavewt >= %s && ?tavewt <= %s)""" % (sel_tavewt[0], sel_tavewt[1])
 
@@ -580,7 +546,7 @@ def userpara():
     if taveat_key in processeddata:
         sel_taveat = processeddata['taveat']
         taveat_query = """[] a dfds:CLNA_FallMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?taveat].
         FILTER (?taveat >= %s && ?taveat <= %s)""" % (sel_taveat[0], sel_taveat[1])
 
@@ -590,7 +556,7 @@ def userpara():
     if tavesp_key in processeddata:
         sel_tavesp = processeddata['tavesp']
         tavesp_query = """[] a dfds:CLNA_SpringMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?tavesp].
         FILTER (?tavesp >= %s && ?tavesp <= %s)""" % (sel_tavesp[0], sel_tavesp[1])
 
@@ -600,7 +566,7 @@ def userpara():
     if mcmt_key in processeddata:
         sel_mcmt = processeddata['mcmt']
         mcmt_query = """[] a dfds:CLNA_ColdestMonthMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?mcmt].
         FILTER (?mcmt >= %s && ?mcmt <= %s)""" % (sel_mcmt[0], sel_mcmt[1])
 
@@ -610,7 +576,7 @@ def userpara():
     if mwmt_key in processeddata:
         sel_mwmt = processeddata['mwmt']
         mwmt_query = """[] a dfds:CLNA_WarmestMonthMeanTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?mwmt].
         FILTER (?mwmt >= %s && ?mwmt <= %s)""" % (sel_mwmt[0], sel_mwmt[1])
 
@@ -620,7 +586,7 @@ def userpara():
     if ext_key in processeddata:
         sel_ext = processeddata['ext']
         ext_query = """[] a dfds:CLNA_ExtremeMaximumTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?ext].
         FILTER (?ext >= %s && ?ext <= %s)""" % (sel_ext[0], sel_ext[1])
 
@@ -630,7 +596,7 @@ def userpara():
     if emt_key in processeddata:
         sel_emt = processeddata['emt']
         emt_query = """[] a dfds:CLNA_ExtremeMinimumTemperature1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?emt].
         FILTER (?emt >= %s && ?emt <= %s)""" % (sel_emt[0], sel_emt[1])
 
@@ -640,7 +606,7 @@ def userpara():
     if map_key in processeddata:
         sel_map = processeddata['map']
         map_query = """[] a dfds:CLNA_AnnualMeanPrecipitation1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?map].
         FILTER (?map >= %s && ?map <= %s)""" % (sel_map[0], sel_map[1])
 
@@ -650,7 +616,7 @@ def userpara():
     if pptsm_key in processeddata:
         sel_pptsm = processeddata['pptsm']
         pptsm_query = """[] a dfds:CLNA_SummerPrecipitation1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?pptsm].
         FILTER (?pptsm >= %s && ?pptsm <= %s)""" % (sel_pptsm[0], sel_pptsm[1])
 
@@ -660,7 +626,7 @@ def userpara():
     if pptwt_key in processeddata:
         sel_pptwt = processeddata['pptwt']
         pptwt_query = """[] a dfds:CLNA_WinterPrecipitation1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?pptwt].
         FILTER (?pptwt >= %s && ?pptwt <= %s)""" % (sel_pptwt[0], sel_pptwt[1])
 
@@ -670,7 +636,7 @@ def userpara():
     if pptat_key in processeddata:
         sel_pptat = processeddata['pptat']
         pptat_query = """[] a dfds:CLNA_FallPrecipitation1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?pptat].
         FILTER (?pptat >= %s && ?pptat <= %s)""" % (sel_pptat[0], sel_pptat[1])
 
@@ -680,7 +646,7 @@ def userpara():
     if pptsp_key in processeddata:
         sel_pptsp = processeddata['pptsp']
         pptsp_query = """[] a dfds:CLNA_SpringPrecipitation1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?pptsp].
         FILTER (?pptsp >= %s && ?pptsp <= %s)""" % (sel_pptsp[0], sel_pptsp[1])
 
@@ -690,7 +656,7 @@ def userpara():
     if pas_key in processeddata:
         sel_pas = processeddata['pas']
         pas_query = """[] a dfds:CLNA_PrecipitationAsSnow1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?pas].
         FILTER (?pas >= %s && ?pas <= %s)""" % (sel_pas[0], sel_pas[1])
 
@@ -700,7 +666,7 @@ def userpara():
     if nffd_key in processeddata:
         sel_nffd = processeddata['nffd']
         nffd_query = """[] a dfds:CLNA_NumberOfFrostFreeDays1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?nffd].
         FILTER (?nffd >= %s && ?nffd <= %s)""" % (sel_nffd[0], sel_nffd[1])
 
@@ -710,7 +676,7 @@ def userpara():
     if rh_key in processeddata:
         sel_rh = processeddata['rh']
         rh_query = """[] a dfds:CLNA_MeanAnnualRelativeHumidity1991-2020;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?rh].
         FILTER (?rh >= %s && ?rh <= %s)""" % (sel_rh[0], sel_rh[1])
 
@@ -720,7 +686,7 @@ def userpara():
     if minelevation_key in processeddata:
         sel_minelevation = processeddata['minelevation']
         minelevation_query = """[] a dfds:MinimumElevation;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?minelevation].
         FILTER (?minelevation >= %s && ?minelevation <= %s)""" % (sel_minelevation[0], sel_minelevation[1])
 
@@ -730,7 +696,7 @@ def userpara():
     if maxelevation_key in processeddata:
         sel_maxelevation = processeddata['maxelevation']
         maxelevation_query = """[] a dfds:MaximumElevation;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?maxelevation].
         FILTER (?maxelevation >= %s && ?maxelevation <= %s)""" % (sel_maxelevation[0], sel_maxelevation[1])
 
@@ -740,7 +706,7 @@ def userpara():
     if meanelevation_key in processeddata:
         sel_meanelevation = processeddata['meanelevation']
         meanelevation_query = """[] a dfds:MeanElevation;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?meanelevation].
         FILTER (?meanelevation >= %s && ?meanelevation <= %s)""" % (sel_meanelevation[0], sel_meanelevation[1])
 
@@ -750,7 +716,7 @@ def userpara():
     if meanslope_key in processeddata:
         sel_meanslope = processeddata['meanslope']
         meanslope_query = """[] a dfds:MeanSlope;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?meanslope].
         FILTER (?meanslope >= %s && ?meanslope <= %s)""" % (sel_meanslope[0], sel_meanslope[1])
 
@@ -760,7 +726,7 @@ def userpara():
     if aws150_key in processeddata:
         sel_aws150 = processeddata['aws150']
         aws150_query = """[] a dfds:AverageWaterStorage150cm;
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?aws150].
         FILTER (?aws150 >= %s && ?aws150 <= %s)""" % (sel_aws150[0], sel_aws150[1])
 
@@ -817,7 +783,7 @@ def inventoryyear():
     inventoryyear_querystring = """ PREFIX fio: <http://purl.org/spatialai/fio/v1/core/>
         select distinct  ?year
         where { 
-        ?sanpshot a fio:OrganismSnapshot;
+	    ?sanpshot a fio:OrganismSnapshot;
            fio:snapshotDate ?year
         }  order by ASC(?year)"""
     
@@ -1051,7 +1017,7 @@ def treeclassmap():
         sel_ts_value = "'" + "','".join(map(str, sel_ts)) + "'"
         ts_query = """?snapshot fio:includeRecord ?tsrecord.
                             ?tsrecord stad:hasQualityKind dfds:TreeStatus;
-                                    stad:hasQualitativeValue ?classvalue.
+            		                stad:hasQualitativeValue ?classvalue.
                             ?classvalue rdfs:label ?tsclass.
         FILTER (?tsclass IN (%s) )""" % sel_ts_value
 
@@ -1061,7 +1027,7 @@ def treeclassmap():
         sel_dbh = processeddata['dbhrange']
         dbh_query = """?snapshot fio:includeRecord ?dbhrecord.
                        ?dbhrecord stad:hasQualityKind dfds:TreeDiameterAtBreastHeight;
-                               stad:hasQuantitativeValue[qudt:numericValue ?dbh].
+            		           stad:hasQuantitativeValue[qudt:numericValue ?dbh].
                         FILTER (?dbh >= %s && ?dbh <= %s && ?dbh != "NaN"^^xsd:float)""" %(sel_dbh[0], sel_dbh[1])
 
         queryString = queryString + "\n" + dbh_query
@@ -1070,7 +1036,7 @@ def treeclassmap():
         sel_tah = processeddata['tahrange']
         tah_query = """?snapshot fio:includeRecord ?tahrecord.
                        ?tahrecord stad:hasQualityKind dfds:TreeActualHeight;
-                               stad:hasQuantitativeValue[qudt:numericValue ?tah].
+            		           stad:hasQuantitativeValue[qudt:numericValue ?tah].
                         FILTER (?tah >= %s && ?tah <= %s && ?tah != "NaN"^^xsd:float)""" %(sel_tah[0], sel_tah[1])
 
         queryString = queryString + "\n" + tah_query
@@ -1079,7 +1045,7 @@ def treeclassmap():
         sel_tth = processeddata['tthrange']
         tth_query = """?snapshot fio:includeRecord ?tthrecord.
                        ?tthrecord stad:hasQualityKind dfds:TreeTotalHeight;
-                               stad:hasQuantitativeValue[qudt:numericValue ?tth].
+            		           stad:hasQuantitativeValue[qudt:numericValue ?tth].
                         FILTER (?tth >= %s && ?tth <= %s && ?tth != "NaN"^^xsd:float)""" %(sel_tth[0], sel_tth[1])
 
         queryString = queryString + "\n" + tth_query
@@ -1139,7 +1105,7 @@ def treeclassmap():
                 dfds:cellID ?cellID;
                 geo:hasGeometry [geo:asWKT ?geom].
             [] a dfds:{selected_env_prop};
-        stad:hasSpatialCoverage ?region;
+	    stad:hasSpatialCoverage ?region;
         stad:hasQuantitativeValue [qudt:numericValue ?prop].}}"""
 
         name_space_query = """PREFIX stad: <http://purl.org/spatialai/stad/v2/core/> 
@@ -1177,7 +1143,7 @@ def treeclassmap():
     
         region_geoj = region_gdf.__geo_interface__
     else:
-        region_geoj = []
+        region_goej = []
     
     # Return the GeoJSON as a JSON response
     return jsonify({'treedata': treedata, "envdata":region_geoj})
@@ -1208,9 +1174,9 @@ def minmaxtree():
         ?tree a [ oboInOwl:hasExactSynonym ?cname ] .
         ?snapshot fio:snapshotOf ?tree ;
                   fio:snapshotDate ?year ;
-                fio:includeRecord ?record.
+        		fio:includeRecord ?record.
             ?record stad:hasQualityKind dfds:{quality};
-                    stad:hasQuantitativeValue[qudt:numericValue ?val].
+            		stad:hasQuantitativeValue[qudt:numericValue ?val].
         FILTER (?cname = "{cname}" && ?year = "{year}"^^xsd:gYear)
         FILTER(ISNUMERIC(?val)&& ?val != "NaN"^^xsd:float)
     }}"""    
@@ -1383,7 +1349,7 @@ def treeswithpreferences():
         tree_id = tree_name.replace(" ", "")
         trees_list.append([tree_name, tree_id])
 
-    return jsonify({'treeslisthtml':render_template('preferencesTaskLoop.html', trees_list=trees_list)})
+    return jsonify({'treeslisthtml':render_template('preferencesTaskloop.html', trees_list=trees_list)})
  
 
 @app.route('/treepreferences', methods=['GET', 'POST'])
