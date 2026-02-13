@@ -1349,7 +1349,7 @@ def treeswithpreferences():
         tree_id = tree_name.replace(" ", "")
         trees_list.append([tree_name, tree_id])
 
-    return jsonify({'treeslisthtml':render_template('preferencesTaskloop.html', trees_list=trees_list)})
+    return jsonify({'treeslisthtml':render_template('preferencesTaskLoop.html', trees_list=trees_list)})
  
 
 @app.route('/treepreferences', methods=['GET', 'POST'])
