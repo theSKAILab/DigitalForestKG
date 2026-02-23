@@ -1525,3 +1525,7 @@ def feasibiltycheck():
 
     return jsonify({'html_map':html_map})
 '''
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='localhost', port=5000)
