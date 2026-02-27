@@ -1140,10 +1140,10 @@ def treeclassmap():
         region_table = pd.DataFrame.from_dict(selected_region_dic)
         region_table['geometry'] = region_table['geometry'].apply(wkt.loads)
         region_gdf = gpd.GeoDataFrame(region_table, crs='EPSG:4326')
-    
+
         region_geoj = region_gdf.__geo_interface__
     else:
-        region_goej = []
+        region_geoj = []
     
     # Return the GeoJSON as a JSON response
     return jsonify({'treedata': treedata, "envdata":region_geoj})
