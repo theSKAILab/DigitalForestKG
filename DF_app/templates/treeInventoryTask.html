@@ -57,7 +57,7 @@
             <label class="input-group-text" for="inputGroupSelect01">From</label>
         </div>
         <select class="form-select" id="sel_year">
-            <option id="selyearinitial" selected>Select</option>
+            <option id="selyearinitial" selected onselect="markStartClicked()">Select</option>
         </select>
     </div>
     <div class="input-group mb-3">
@@ -65,11 +65,11 @@
             <label class="input-group-text" for="inputGroupSelect01">To</label>
         </div>
         <select class="form-select" id="sel_year2">
-            <option id="selyearinitial2" selected>Select</option>
+            <option id="selyearinitial2" selected onselect="markEndClicked()">Select</option>
         </select>
     </div>
     <hr>
-    <div class="container">
+    <div class="container" id="tree-family">
         <div class="level-one-box">
             <button class="plusminuslevelonebutton" type="button" id="angiospermfamily"><span></span></button>
             <button class="text-button-levelone taxbutton" cname="angiosperms" sname="Magnoliopsida" value="NCBITaxon_3398" id="angiosperms">Hardwood</button>
@@ -417,4 +417,5 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/static/scripts/treeInventoryTask.js"></script>
+
 {% endblock %}

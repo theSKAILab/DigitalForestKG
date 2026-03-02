@@ -90,6 +90,22 @@ jQuery(document).ready(function () {
         }
     });
 
+    $("#tree-family").hide();
+
+    $('#sel_year2').on("change", function(){
+        var s = document.getElementById("sel_year");
+        var e = document.getElementById("sel_year2")
+
+        selectedStart = s.options[s.selectedIndex].text;
+        selectedEnd = e.options[e.selectedIndex].text;
+
+        if (selectedStart !== 'Select' && selectedEnd !== 'Select'){
+            $("#tree-family").toggle();
+        }
+    })
+
+    $('#tree-filters').hide();
+
     // 
     $(".plusminuslevelonebutton").on("click", function () {
         $(this).toggleClass('active');
@@ -113,8 +129,27 @@ jQuery(document).ready(function () {
             }
 
         });
-
     });
+
+    $('#angiosperms').on('click', 'button.taxbutton', function(){
+        if ($('#tree-filters').is(":hidden")){
+           $('#tree-filters').toggle(); 
+        }
+    })
+
+    // Show tree-filters when any taxbutton is clicked
+    $(document).on('click', '.taxbutton', function(){
+        if ($('#tree-filters').is(":hidden")){
+           $('#tree-filters').show(); 
+        }
+    })
+
+    // Also show tree-filters when any tree selection button is clicked (level two, three, four)
+    $(document).on('click', '.text-button-leveltwo, .text-button-levelthree, .text-button-levelfour', function(){
+        if ($('#tree-filters').is(":hidden")){
+           $('#tree-filters').show(); 
+        }
+    })
 
     $('#gymnospermfamilygroup').hide();
 
