@@ -43,80 +43,77 @@ jQuery(document).ready(function () {
             url: '/all_areas',
             type: 'GET',
             traditional: true,
-            success: function (data) {
-                console.log('All areas loaded:', data);
-                
+            success: function (data) {                
                 var allAreasGeoJSON = data.all_areas_geoj;
-                console.log('GeoJSON data:', allAreasGeoJSON);
                 
                 try {
                     // Parse GeoJSON if it's a string
-                    var geoJSONObj = typeof allAreasGeoJSON === 'string' ? JSON.parse(allAreasGeoJSON) : allAreasGeoJSON;
-                    console.log('Parsed GeoJSON:', geoJSONObj);
-                    
-                    // Create a vector source from all areas GeoJSON
-                    var vectorSource_allAreas = new ol.source.Vector({
-                        features: new ol.format.GeoJSON().readFeatures(geoJSONObj, {
-                            dataProjection: 'EPSG:4326',
-                            featureProjection: 'EPSG:3857'
-                        })
-                    });
-                    
-                    console.log('Number of features:', vectorSource_allAreas.getFeatures().length);
-
-                    // Style function that uses the color property from each feature
-                    var styleFunction = function(feature) {
-                        var color = feature.get('color') || '#CCCCCC'; // Default gray if no color
-                        var countyName = feature.get('COUNTY') || '';
+                    overlay_check =  document.getElementById("countyBordersSwitch").checked;
+                    if (overlay_check){
+                        var geoJSONObj = typeof allAreasGeoJSON === 'string' ? JSON.parse(allAreasGeoJSON) : allAreasGeoJSON;
+                        console.log('Parsed GeoJSON:', geoJSONObj);
                         
-                        // Convert hex color to rgba with reduced opacity (40%)
-                        var rgbaColor = hexToRgba(color, 0.4);
+                        // Create a vector source from all areas GeoJSON
+                        var vectorSource_allAreas = new ol.source.Vector({
+                            features: new ol.format.GeoJSON().readFeatures(geoJSONObj, {
+                                dataProjection: 'EPSG:4326',
+                                featureProjection: 'EPSG:3857'
+                            })
+                        });
                         
-                        return new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: rgbaColor
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: '#1a1a1a', // Darker black for borders
-                                width: 2.5,
-                                lineDash: [0] // Solid line
-                            }),
-                            text: new ol.style.Text({
-                                text: countyName,
-                                font: 'bold 12px Arial',
+                        // Style function that uses the color property from each feature
+                        var styleFunction = function(feature) {
+                            var color = feature.get('color') || '#CCCCCC'; // Default gray if no color
+                            var countyName = feature.get('COUNTY') || '';
+                            
+                            // Convert hex color to rgba with reduced opacity (40%)
+                            var rgbaColor = hexToRgba(color, 0.4);
+                            
+                            return new ol.style.Style({
                                 fill: new ol.style.Fill({
-                                    color: '#FFFFFF'
+                                    color: rgbaColor
                                 }),
                                 stroke: new ol.style.Stroke({
-                                    color: '#1a1a1a',
-                                    width: 4
+                                    color: '#1a1a1a', // Darker black for borders
+                                    width: 2.5,
+                                    lineDash: [0] // Solid line
                                 }),
-                                offsetY: 0,
-                                overflow: false,
-                                placement: 'point'
-                            }),
+                                text: new ol.style.Text({
+                                    text: countyName,
+                                    font: 'bold 12px Arial',
+                                    fill: new ol.style.Fill({
+                                        color: '#FFFFFF'
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: '#1a1a1a',
+                                        width: 4
+                                    }),
+                                    offsetY: 0,
+                                    overflow: false,
+                                    placement: 'point'
+                                }),
+                                zIndex: 1000
+                            });
+                        };
+
+                        // Helper function to convert hex to rgba
+                        var hexToRgba = function(hex, alpha) {
+                            var r = parseInt(hex.slice(1, 3), 16);
+                            var g = parseInt(hex.slice(3, 5), 16);
+                            var b = parseInt(hex.slice(5, 7), 16);
+                            return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+                        };
+
+                        // Vector layer for all areas
+                        var vectorLayer_allAreas = new ol.layer.Vector({
+                            source: vectorSource_allAreas,
+                            style: styleFunction,
                             zIndex: 1000
                         });
-                    };
 
-                    // Helper function to convert hex to rgba
-                    var hexToRgba = function(hex, alpha) {
-                        var r = parseInt(hex.slice(1, 3), 16);
-                        var g = parseInt(hex.slice(3, 5), 16);
-                        var b = parseInt(hex.slice(5, 7), 16);
-                        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
-                    };
-
-                    // Vector layer for all areas
-                    var vectorLayer_allAreas = new ol.layer.Vector({
-                        source: vectorSource_allAreas,
-                        style: styleFunction,
-                        zIndex: 1000
-                    });
-
-                    // Add the layer to the map (add to bottom, after base layer)
-                    map.addLayer(vectorLayer_allAreas);
-                    console.log('All areas layer added to map');
+                        // Add the layer to the map (add to bottom, after base layer)
+                        map.addLayer(vectorLayer_allAreas);
+                    }
                 } catch (error) {
                     console.error('Error processing all areas data:', error);
                 }
@@ -128,7 +125,18 @@ jQuery(document).ready(function () {
     }
 
     // Load all areas (counties) on page load
-    loadAllAreas();
+    $('#countyBordersSwitch').change(function () {
+        const layersToRemove = [];
+        map.getLayers().forEach(function(layer, index) {
+            if (index > 1) {
+                layersToRemove.push(layer);
+            }
+        });
+        layersToRemove.forEach(function(layer) {
+            map.removeLayer(layer);
+        });
+        loadAllAreas();
+    })
 
     // Get inventory years from data
     $.ajax({
