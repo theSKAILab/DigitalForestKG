@@ -22,15 +22,30 @@ import json
 import branca
 import branca.colormap as cm
 import ssl
+import os
+from dotenv import dotenv_values
 #global results_table
 
 # Ascript to bypass ssl verification (only for development mode)
 ssl._create_default_https_context = ssl._create_unverified_context
 
+#Load configuration from .env file(s)
+config = {
+    **dotenv_values(".env"),  # load preference and public credentials
+    **dotenv_values(".env.cred"),  # load secret credentials
+    **os.environ,  # override loaded values with environment variables
+}
+
 # SPARQL ENDPOINT
-sparql_endpoint = SPARQLWrapper("https://gdb.acg.maine.edu:7200/repositories/DigitalForestGraph")
-sparql_endpoint.setCredentials("digital-forest-endpoint", "skailab")
-sparql_endpoint.setMethod(POST)
+if config["TRIPLESTORE"] == "GraphDB":
+    sparql_endpoint = SPARQLWrapper(config["GDB_ENDPOINT"])
+    #SPARQLWrapper("https://gdb.acg.maine.edu:7200/repositories/DigitalForestGraph")
+    sparql_endpoint.setCredentials(config["GDB_USER"], config["GDB_PASS"])
+            #"digital-forest-endpoint", "skailab")
+    sparql_endpoint.setMethod(POST)
+else:
+    print("No triplestore configured!!")
+    exit()
 
 def range_check(row, index, lower, upper):
     if (row[index] >= lower) and (row[index] <= upper):
