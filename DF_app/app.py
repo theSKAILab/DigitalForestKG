@@ -43,6 +43,9 @@ if config["TRIPLESTORE"] == "GraphDB":
     sparql_endpoint.setCredentials(config["GDB_USER"], config["GDB_PASS"])
             #"digital-forest-endpoint", "skailab")
     sparql_endpoint.setMethod(POST)
+elif config["TRIPLESTORE"] == "Qlever":
+    sparql_endpoint = SPARQLWrapper(config["Q_ENDPOINT"])
+    sparql_endpoint = setMethod(POST)
 else:
     print("No triplestore configured!!")
     exit()
