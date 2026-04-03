@@ -1240,15 +1240,16 @@ def minmaxtree():
     }}"""    
     
     minmax_querystring = name_space + "\n" + select_query
-
+    print(minmax_querystring)
     sparql_endpoint.setQuery(minmax_querystring)
     sparql_endpoint.setReturnFormat(JSON)
     minmaxresults = sparql_endpoint.query().convert()
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
+        unit = result["unit"]["value"]
 
-    return jsonify({'datamin':datamin, 'datamax':datamax})
+    return jsonify({'datamin':datamin, 'datamax':datamax, 'unit':unit})
 
 @app.route('/categorygrouptree', methods=['GET', 'POST'])
 def categorygrouptree():
