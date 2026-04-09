@@ -761,6 +761,7 @@ jQuery(document).ready(function () {
                 url: '/minmaxtree',
                 traditional: true,
                 success: function (data) {
+			console.log(data) //DEBUG
                     minvalue = Number(data.datamin);
                     maxvalue = Number(data.datamax);
                     noUiSlider.create(sliderDiv, {
