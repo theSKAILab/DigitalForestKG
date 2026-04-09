@@ -1335,8 +1335,9 @@ def minmaxtreeenv():
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
+        unit = result["unit"]["value"]
 
-    return jsonify({'datamin':datamin, 'datamax':datamax})
+    return jsonify({'datamin':datamin, 'datamax':datamax, 'unit':unit})
 
 @app.route('/categorygrouptreeenv', methods=['GET', 'POST'])
 def categorygrouptreeenv():
