@@ -23,7 +23,6 @@ import branca
 import branca.colormap as cm
 import ssl
 import os
-import json
 from dotenv import dotenv_values
 #global results_table
 
