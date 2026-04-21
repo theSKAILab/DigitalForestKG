@@ -181,7 +181,7 @@ def about():
         "about.html",
         title="About",
         year=datetime.now().year,
-        message="INSPIRES DIGITA FOREST.",
+        message="INSPIRES DIGITAL FOREST.",
     )
 
 
@@ -192,7 +192,7 @@ def help():
         "help.html",
         title="Help",
         year=datetime.now().year,
-        message="Your help page",
+        message="Your help page.",
     )
 
 
