@@ -746,3 +746,7 @@ main {
     display: flex;
     justify-content: space-between;
 }
+
+.hero {
+    padding-top: 56px;
+}

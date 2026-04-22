@@ -1578,6 +1578,22 @@ def feasibiltycheck():
     return jsonify({'html_map':html_map})
 '''
 
+<<<<<<< Updated upstream
 
 if __name__ == '__main__':
     app.run(debug=True, host='localhost', port=5000)
+=======
+@app.context_processor
+def inject_tasks():
+    return {
+        "app_tasks": [
+            {"endpoint": "environmentalDataTask", "label": "Environmental Data",             "icon": "/static/images/env_icon.png",       "title": "Environmental Data"},
+            {"endpoint": "treeinventorytask",     "label": "Tree Inventory Data",            "icon": "/static/images/tree_inventory.png", "title": "Tree Inventory Data "},
+            {"endpoint": "treepreferencestask",   "label": "Tree Environmental Preferences", "icon": "/static/images/analysis.png",       "title": "Tree Environmental Preferences"},
+        ]
+    }
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host="localhost", port=5000)
+>>>>>>> Stashed changes
