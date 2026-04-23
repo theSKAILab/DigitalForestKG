@@ -1,12 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    {% include "navbar.html" %}
-    <div>  
-        <h1>Explore Maine forest ecosystem data</h1>
-        <p>Query Environmental Data, Tree Inventory Data, and Tree Environmental Preferences across Maine. Filter, visualize, and export your results in seconds.</p>
-    </div>
+{% include "navbar.html" %}
+
     <div class="container-fluid flex-grow-1 p-0 overflow-hidden">
+        <div>  
+            <h1>Explore Maine forest ecosystem data</h1>
+            <p>Query Environmental Data, Tree Inventory Data, and Tree Environmental Preferences across Maine. Filter, visualize, and export your results in seconds.</p>
+        </div>
         <div>
         {% for task in app_tasks %}
             <div>
