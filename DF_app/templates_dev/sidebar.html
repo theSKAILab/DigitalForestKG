@@ -1,14 +1,22 @@
 <div class="row h-100">
-    <div class="col-md-auto d-none d-md-block bg-light pe-0 ">
+    <div class="col-md-auto bg-light pe-0 ">
         <ul class="list-group mt-0" style="max-width: 25rem;">
+
+            <li class="card bg-light border-0">
+
+                    <div class="card-body pe-0 ">
+                        <h5 class="card-title fw-bold">Data Modules</h5>
+                        <h6 class="card-subtitle text-body-secondary">Select a module to begin</h6>
+                    </div>
+            </li>
             {% for task in app_tasks %}
-            <li class="card mb-3 bg-light border-0 ">
+            <li class="card bg-light border-0 ">
                 <a href="{{ url_for(task.endpoint) }}" class="text-decoration-none">
                     <div class="row g-0 ">
                         <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="{{ task.icon }}" alt="" class="img-fluid p-1" style="max-height: 4rem;">
+                            <img src="{{ task.icon }}" alt="" class="p-1" style="max-height: 4rem;">
                         </div>
-                        <div class="col overflow-hidden pl-0 pe-0">
+                        <div class="col">
                             <div class="card-body ps-0 pe-0 ">
                                 <h5 class="card-title">{{ task.label }}</h5>
                                 <p class="card-text">{{ task.title }}</p>
