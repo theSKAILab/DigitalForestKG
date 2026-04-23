@@ -3,14 +3,13 @@
 {% block content %}
 {% include "navbar.html" %}
 
-    <div class="container-fluid flex-grow-1 p-0 overflow-hidden">
+    <div class="container-fluid p-0 overflow-hidden">
         <div>  
             <h1>Explore Maine forest ecosystem data</h1>
             <p>Query Environmental Data, Tree Inventory Data, and Tree Environmental Preferences across Maine. Filter, visualize, and export your results in seconds.</p>
         </div>
         <div>
-        {% for task in app_tasks %}
-            <div>
+            {% for task in app_tasks %}
                 <a href="{{ url_for(task.endpoint) }}" class="card text-decoration-none">
                     <img src="{{ task.icon }}" alt="" width="24" height="24">
                     <div class="card-body">
@@ -18,8 +17,10 @@
                         <p class="card-text">{{ task.title }}</p>
                     </div>
                 </a>
-            </div>
-        {% endfor %}
+            {% endfor %}
         </div>
     </div>
+    {% include "footer.html" %}
+
+
 {% endblock %}
