@@ -2,5 +2,619 @@
 
 {% block content %}
 {% include "navbar.html" %}
+<div class="d-flex" style="min-height: calc(100vh - 67px);">
+
+  <!-- Sidebar: Help Topics -->
+  <div class="d-flex flex-column justify-content-between flex-shrink-0" style="width: 261px; background: #F8F9F6;">
+
+    <!-- Top section -->
+    <div class="pt-4 px-3">
+
+      <h6 class="fw-medium mb-3" style="color: #888; ">
+        Help Topics
+      </h6>
+
+      <!-- Instructions -->
+      <a href="#" class="help-sidebar-item d-flex align-items-center text-decoration-none rounded-2 mb-2 p-2 gap-3" data-tab="instructions">
+        <span class="sidebar-dot rounded-circle flex-shrink-0" style="width: 10px; height: 10px;"></span>
+        <div>
+          <div class="fw-medium" style="font-size: 12px; color: #1A1A1A;">Instructions</div>
+          <small class="text-muted" style="font-size: 10px;">How each module works</small>
+        </div>
+      </a>
+
+      <!-- Filter reference -->
+      <a href="#" class="help-sidebar-item d-flex align-items-center text-decoration-none rounded-2 p-2 gap-3" data-tab="filters">
+        <span class="sidebar-dot rounded-circle flex-shrink-0" style="width: 10px; height: 10px;"></span>
+        <div>
+          <div class="fw-medium" style="font-size: 12px; color: #1A1A1A;">Filter reference</div>
+          <small class="text-muted" style="font-size: 10px;">All available filters</small>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Bottom section: Contact -->
+    <div class="px-3 py-3 border-top">
+      <small class="text-muted d-block" style="font-size: 11px;">Still need help?</small>
+      <a href="#" class="fw-medium text-decoration-none" style="font-size: 12px; color: #2D7A2D;">Contact us →</a>
+    </div>
+
+  </div>
+
+  <!-- Main Content -->
+  <div class="d-flex flex-column flex-grow-1">
+
+    <!-- Header -->
+    <div class="px-4 pt-4 ps-5" >
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-2" style="font-size: 11px;">
+        <li class="breadcrumb-item"><a href="#" style="color: #2D7A2D;">Help</a></li>
+        <li class="breadcrumb-item active header-text" data-header="instructions" style="color: #2D7A2D;">Instructions</li>
+        <li class="breadcrumb-item active header-text" data-header="filters" style="color: #2D7A2D; display: none;">Filter reference</li>
+    </ol>
+    </nav>
+
+    <!-- Title -->
+    <h3 class="fw-medium mb-2 header-text" data-header="instructions" style="color: #1A1A1A;">Instructions</h3>
+    <h3 class="fw-medium mb-2 header-text" data-header="filters" style="color: #1A1A1A; display: none;">Filter reference</h3>
+
+    <!-- Description -->
+    <p class="text-muted mb-4 small" data-header="instructions">
+    Learn what each module does and how to use it.
+    </p>
+    <p class="text-muted mb-4 small" data-header="filters" style="display: none;">
+    Browse all available filters. Each card shows the filter name, and accepted value range.
+    </p>  
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs border-0" id="helpTabs">
+        <li class="nav-item">
+          <a class="nav-link help-tab active px-4" href="#" data-target="instructions"
+             style="font-size: 13px; border: none; border-radius: 0; color: #555;">Instructions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link help-tab px-4" href="#" data-target="filters"
+             style="font-size: 13px; border: none; border-radius: 0; color: #555;">Filter reference</a>
+        </li>
+      </ul>
+
+    </div>
+
+    <!-- Divider -->
+    <hr class="m-0" style="border-color: #E4E7DF;">
+
+    <!-- ============================================ -->
+    <!-- TAB 1: Instructions                          -->
+    <!-- ============================================ -->
+<div id="tab-instructions" class="tab-panel overflow-auto p-5">
+      <!-- Tree Inventory Module -->
+      <div class="border rounded-3 p-4 mb-4" style="border-color: #E4E7DF !important;">
+
+        <!-- Module header -->
+        <div class="d-flex align-items-center mb-4 gap-3">
+          <div class="d-flex align-items-center justify-content-center rounded-3"
+               style="width: 48px; height: 48px; background: #F0F2EC;">
+            <i class="bi bi-tree-fill" style="font-size: 20px; color: #2D7A2D;"></i>
+          </div>
+          <div>
+            <div class="fw-semibold" style="font-size: 16px; color: #1A1A1A;">Tree Inventory</div>
+            <small class="text-muted" style="font-size: 12px;">Species, distribution, time period</small>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-muted mb-3 small"">
+          The Tree Inventory Data page allows you to see the distribution of one or more types of trees in Maine in a specific time period.
+        </p>
+
+        <!-- Example callout -->
+        <div class="rounded-2 p-3 mb-3" style="border-left: 3px solid #2D7A2D; background: #FAFBF8;">
+          <div class="fw-semibold mb-1" style="color: #2D7A2D;">Example</div>
+          <p class="mb-0 text-muted small">
+            View the distribution of pine trees with diameter at breast height between 20 and 25 cm.
+          </p>
+        </div>
+
+        <!-- Link -->
+        <a href="#" class="text-decoration-none fw-medium small" style="color: #2D7A2D;">Open Tree Inventory →</a>
+      </div>
+
+      <!-- Environmental Data Module -->
+      <div class="border rounded-3 p-4 mb-4" style="border-color: #E4E7DF !important;">
+
+        <!-- Module header -->
+        <div class="d-flex align-items-center mb-4 gap-3">
+          <div class="d-flex align-items-center justify-content-center rounded-3"
+               style="width: 48px; height: 48px; background: #F0F2EC;">
+            <i class="bi bi-droplet-fill" style="font-size: 20px; color: #444;"></i>
+          </div>
+          <div>
+            <div class="fw-semibold" style="font-size: 16px; color: #1A1A1A;">Environmental Data</div>
+            <small class="text-muted" style="font-size: 12px;">Temp, humidity, climate</small>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-muted mb-3 small"">
+          The Environmental Data page allows you to view a specified region in Maine colored by whether it fits a set of environmental criteria.
+        </p>
+
+        <!-- Example callout -->
+        <div class="rounded-2 p-3 mb-3" style="border-left: 3px solid #2D7A2D; background: #FAFBF8;">
+          <div class="fw-semibold mb-1" style="color: #2D7A2D;">Example</div>
+          <p class="mb-0 text-muted small">
+            See which locations in Kennebec County have more or less than 170 frost-free days a year.
+          </p>
+        </div>
+
+        <!-- Link -->
+        <a href="#" class="text-decoration-none fw-medium small" style="color: #2D7A2D;">Open Environmental Data →</a>
+      </div>
+
+      <!-- Tree Environmental Preferences Module -->
+      <div class="border rounded-3 p-4 mb-4" style="border-color: #E4E7DF !important;">
+
+        <!-- Module header -->
+        <div class="d-flex align-items-center mb-4 gap-3">
+          <div class="d-flex align-items-center justify-content-center rounded-3"
+               style="width: 48px; height: 48px; background: #F0F2EC;">
+            <i class="bi bi-check-square-fill" style="font-size: 20px; color: #444;"></i>
+          </div>
+          <div>
+            <div class="fw-semibold" style="font-size: 16px; color: #1A1A1A;">Tree Environmental Preferences</div>
+            <small class="text-muted" style="font-size: 12px;">Feasibility maps, species suitability</small>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-muted mb-3 small"">
+          The Tree Environmental Preferences page allows you to create a feasibility map for a specific tree species based on selected properties.
+        </p>
+
+        <!-- Example callout -->
+        <div class="rounded-2 p-3 mb-3" style="border-left: 3px solid #2D7A2D; background: #FAFBF8;">
+          <div class="fw-semibold mb-1" style="color: #2D7A2D;">Example</div>
+          <p class="mb-0 text-muted small">
+            See where the elevation is and isn't suited to American Beech trees.
+          </p>
+        </div>
+
+        <!-- Link -->
+        <a href="#" class="text-decoration-none fw-medium small" style="color: #2D7A2D;">Open Tree Environmental Preferences →</a>
+      </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TAB 2: Filter Reference                      -->
+    <!-- ============================================ -->
+    <div id="tab-filters" class="tab-panel overflow-auto" style="padding: 38px 57px; display: none;">
+
+      <!-- Temperature normals -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3 gap-3">
+          <span class="rounded-2" style="width: 32px; height: 32px; background: #F5DDD5; display: inline-block;"></span>
+          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #1A1A1A;">Temperature normals</h5>
+        </div>
+
+        <div class="row g-3">
+          <!-- Annual mean temperature -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Annual mean temperature</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Summer mean temperature -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Summer mean temperature</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Winter mean temperature -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Winter mean temperature</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Coldest month mean -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Coldest month mean temperature</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Warmest month mean temp -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Warmest month mean temperature</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">°C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Precipitation normals -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 12px;">
+          <span class="rounded-2" style="width: 32px; height: 32px; background: #D5E3F5; display: inline-block;"></span>
+          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #1A1A1A;">Precipitation normals</h5>
+        </div>
+
+        <div class="row g-3">
+          <!-- Annual mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Annual mean precipitation</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Summer mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Summer mean precipitation</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Winter mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Winter mean precipitation</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px; ">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Precipitation as snow -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Precipitation as snow</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">mm</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+            <!-- Season Length -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 12px;">
+          <span class="rounded-2" style="width: 32px; height: 32px; background: #D5E3F5; display: inline-block;"></span>
+          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #1A1A1A;">Season length</h5>
+        </div>
+
+        <div class="row g-3">
+          <!-- Annual mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Number of Frost Free Days</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Summer mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Number of Chilling Degree Days</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Winter mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Number of Growing Degree days</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px; ">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">day</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+        <!-- Terrain (Elevation) -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 12px;">
+          <span class="rounded-2" style="width: 32px; height: 32px; background: #D5E3F5; display: inline-block;"></span>
+          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #1A1A1A;">Terrain (Elevation)</h5>
+        </div>
+
+        <div class="row g-3">
+          <!-- Annual mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Minimum Elevation</div>
+              
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">m</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">m</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Summer mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Maximum Elevation</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">m</div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">m</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Winter mean precipitation -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="fw-medium mb-1" style="font-size: 13px; color: #1A1A1A;">Mean Elevation</div>
+              <small class="text-muted d-block mb-3" style="font-size: 11px;">1961–1990</small>
+              <div class="d-flex" style="gap: 8px;">
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px;">Min</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;"><marquee behavior="" direction=""></marquee></div>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-secondary px-3" style="font-size: 12px; ">Max</button>
+                  <div class="text-muted text-center mt-1" style="font-size: 10px;">m</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Soil & bedrock -->
+      <div class="mb-5">
+        <div class="d-flex align-items-center mb-3" style="gap: 12px;">
+          <span class="rounded-2" style="width: 32px; height: 32px; background: #F0E6C8; display: inline-block;"></span>
+          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #1A1A1A;">Soil & bedrock</h5>
+        </div>
+
+        <div class="row g-3">
+          <!-- Soil drainage classes -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="d-flex align-items-start" style="gap: 10px;">
+                <i class="bi bi-check-square-fill mt-1" style="font-size: 16px; color: #bbb;"></i>
+                <div>
+                  <div class="fw-medium" style="font-size: 13px; color: #1A1A1A;">Soil drainage classes</div>
+                  <small class="text-muted" style="font-size: 11px;">Select drainage category</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Bedrock material -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="d-flex align-items-start" style="gap: 10px;">
+                <i class="bi bi-check-square-fill mt-1" style="font-size: 16px; color: #bbb;"></i>
+                <div>
+                  <div class="fw-medium" style="font-size: 13px; color: #1A1A1A;">Bedrock material</div>
+                  <small class="text-muted" style="font-size: 11px;">Select rock type</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Species -->
+          <div class="col-lg-3 col-md-6">
+            <div class="border rounded-3 p-3" style="border-color: #E4E7DF !important;">
+              <div class="d-flex align-items-start" style="gap: 10px;">
+                <i class="bi bi-check-square-fill mt-1" style="font-size: 16px; color: #bbb;"></i>
+                <div>
+                  <div class="fw-medium" style="font-size: 13px; color: #1A1A1A;">Species</div>
+                  <small class="text-muted" style="font-size: 11px;">Filter by tree species</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end tab-filters -->
+
+  </div>
+</div>
+
+<!-- Tab switching + sidebar highlight logic -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const tabs = document.querySelectorAll('.help-tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  const sidebarItems = document.querySelectorAll('.help-sidebar-item');
+
+  function activateTab(targetId) {
+    const headerTexts = document.querySelectorAll('.header-text');
+headerTexts.forEach(el => {
+  el.style.display = el.dataset.header === targetId ? '' : 'none';
+});
+    // Update tab underline
+    tabs.forEach(t => {
+      t.classList.remove('active');
+      t.style.borderBottom = 'none';
+      t.style.color = '#555';
+    });
+    const activeTab = document.querySelector(`.help-tab[data-target="${targetId}"]`);
+    if (activeTab) {
+      activeTab.classList.add('active');
+      activeTab.style.borderBottom = '2px solid #2D7A2D';
+      activeTab.style.color = '#555';
+    }
+
+    // Show/hide panels
+    panels.forEach(p => p.style.display = 'none');
+    const target = document.getElementById('tab-' + targetId);
+    if (target) target.style.display = 'block';
+
+    // Update sidebar highlight
+    sidebarItems.forEach(item => {
+      item.style.background = 'transparent';
+      item.style.border = 'none';
+      item.classList.remove('border');
+      // Set dot to gray for inactive items
+      const dot = item.querySelector('.sidebar-dot');
+      if (dot) dot.style.background = '#888';
+    });
+    const activeSidebar = document.querySelector(`.help-sidebar-item[data-tab="${targetId}"]`);
+    if (activeSidebar) {
+      activeSidebar.style.background = '#EAF3DE';
+      activeSidebar.style.border = '1px solid #17432E';
+      // Set dot to green for active item
+      const activeDot = activeSidebar.querySelector('.sidebar-dot');
+      if (activeDot) activeDot.style.background = '#2D7A2D';
+    }
+  }
+
+  // Tab clicks
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function (e) {
+      e.preventDefault();
+      activateTab(this.dataset.target);
+    });
+  });
+
+  // Sidebar clicks
+  sidebarItems.forEach(item => {
+    item.addEventListener('click', function (e) {
+      e.preventDefault();
+      activateTab(this.dataset.tab);
+    });
+  });
+
+  // Initialize: Instructions tab active
+  activateTab('instructions');
+});
+</script>
 
 {% endblock %}
