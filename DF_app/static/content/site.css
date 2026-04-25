@@ -750,3 +750,15 @@ main {
 .bg-footer-green {
     background-color: #0f5232;
 }
+
+.bg-app-green-secondary {
+    background-color: #f4f7f2;
+}
+
+.bg-app-green-badge {
+    background-color: #d4eac8;
+}
+
+.text-app-green { 
+    color: #0f5232;
+}
