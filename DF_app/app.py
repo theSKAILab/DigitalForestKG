@@ -1853,6 +1853,7 @@ def inject_tasks():
                 "title": "Tree Environmental Preferences",
             },
         ],
+        "active_task": request.endpoint,
         "home_info": [
             {
                 "title": "3",
