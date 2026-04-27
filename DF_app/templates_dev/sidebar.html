@@ -1,31 +1,61 @@
-<div class="row h-100">
-    <div class="col-md-auto bg-light pe-0 ">
-        <ul class="list-group mt-0" style="max-width: 25rem;">
+{% extends "layout.html" %}
 
-            <li class="card bg-light border-0">
+{% block content %}
+<div class="container-fluid h-100 p-0">
+    <div class="row g-0 h-100 flex-nowrap">
 
-                    <div class="card-body pe-0 ">
-                        <h5 class="card-title fw-bold">Data Modules</h5>
-                        <h6 class="card-subtitle text-body-secondary">Select a module to begin</h6>
+        <!-- Sidebar -->
+        <aside class="col-auto bg-light border-end sidebar-nav"
+            style="width: 22rem; height: 100%; overflow-y: auto;">
+
+            <!-- Active module header (click to expand module switcher) -->
+            {% set current_task = app_tasks | selectattr('endpoint', 'equalto', active_task) | list | first %}
+
+            <div class="border-bottom">
+                <button class="btn btn-light w-100 d-flex align-items-center gap-3 p-3 border-0 rounded-0 text-start"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#moduleSwitcher"
+                        aria-expanded="false"
+                        aria-controls="moduleSwitcher">
+                    <img src="{{ current_task.icon }}" alt="" style="width: 2.5rem; height: 2.5rem; object-fit: contain;">
+                    <div class="flex-grow-1">
+                        <div class="text-body-secondary small text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                            Current module
+                        </div>
+                        <div class="fw-semibold">{{ current_task.label }}</div>
                     </div>
-            </li>
-            {% for task in app_tasks %}
-            <li class="card bg-light border-0 ">
-                <a href="{{ url_for(task.endpoint) }}" class="text-decoration-none">
-                    <div class="row g-0 ">
-                        <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="{{ task.icon }}" alt="" class="p-1" style="max-height: 4rem;">
-                        </div>
-                        <div class="col">
-                            <div class="card-body ps-0 pe-0 ">
-                                <h5 class="card-title">{{ task.label }}</h5>
-                                <p class="card-text">{{ task.title }}</p>
+                    <span class="module-switcher-chevron text-body-secondary" aria-hidden="true">▾</span>
+                </button>
+
+                <!-- Other modules — collapsed by default -->
+                <div class="collapse" id="moduleSwitcher">
+                    <div>
+                        {% for task in app_tasks if task.endpoint != active_task %}
+                        <a href="{{ url_for(task.endpoint) }}"
+                           class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-2">
+                            <img src="{{ task.icon }}" alt="" style="width: 2.5rem; height: 2.5rem; object-fit: contain;">
+                            <div>
+                                <div class="fw-semibold">{{ task.label }}</div>
+                                <small class="text-body-secondary">{{ task.title }}</small>
                             </div>
-                        </div>
-                    </div> 
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task-specific filters slot -->
+            <div class="p-3 flex-grow-1">
+                {% block sidebar_filters %}{% endblock %}
+            </div>
+        </aside>
+
+        <!-- Main content (map) -->
+        <main class="col p-0 position-relative overflow-hidden">
+            {% block main_content %}{% endblock %}
+        </main>
+
     </div>
 </div>
+{% endblock %}

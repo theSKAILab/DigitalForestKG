@@ -1833,7 +1833,8 @@ def inject_tasks():
             {"endpoint": "environmentalDataTask", "label": "Environmental Data",             "icon": "/static/images/env_icon.png",       "title": "Environmental Data"},
             {"endpoint": "treeinventorytask",     "label": "Tree Inventory Data",            "icon": "/static/images/tree_inventory.png", "title": "Tree Inventory Data "},
             {"endpoint": "treepreferencestask",   "label": "Tree Environmental Preferences", "icon": "/static/images/analysis.png",       "title": "Tree Environmental Preferences"},
-        ]
+        ],
+        "active_task": request.endpoint,
     }
 
 if __name__ == "__main__":
