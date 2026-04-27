@@ -448,14 +448,20 @@ main {
     z-index: 0;
 }
 
-.map-legend {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+#map-legend {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1500;
+
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    max-width: 18rem;
+    pointer-events: auto;
 }
 
     .map-legend div {
@@ -745,6 +751,58 @@ main {
 .choropleth-legend-labels {
     display: flex;
     justify-content: space-between;
+}
+
+/* Bubble — now a clickable button-like element */
+.taxon-bubble {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid #ced4da;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.taxon-bubble:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+    transform: scale(1.1);
+}
+
+.taxon-bubble:active {
+    transform: scale(0.95);
+}
+
+/* Filled bubble for the currently selected taxon */
+.taxon-row.selected .taxon-bubble {
+    background-color: #198754;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.25);
+}
+
+/* Drop the row-level highlight — only the bubble indicates selection now */
+/* (Remove or comment out the old rule:)
+.taxon-row.selected .taxbutton {
+    background-color: #d1e7dd;
+    border-color: #198754;
+    color: #0a3622;
+    font-weight: 500;
+}
+*/
+
+/* Chevron rotation when expanded — unchanged */
+.taxon-chevron {
+    display: inline-block;
+    transition: transform 0.15s ease;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+.taxon-toggle.expanded .taxon-chevron {
+    transform: rotate(90deg);
 }
 
 .bg-footer-green {
