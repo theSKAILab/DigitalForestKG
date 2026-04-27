@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{% include "navbar.html" %}
 
-    <div class="d-flex flex-column flex-grow-1 overflow-hidden ">
+    <div class="d-flex flex-column flex-grow-1">
         <div class="bg-app-green-secondary" style="flex: 5 1 0;">
             <div class="d-flex h-100 align-items-center">
                 <div style="flex: 3 1 0;">
@@ -52,6 +51,8 @@
         </div>
     </div>
     {% include "footer.html" %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
 <script src="/static/scripts/environmentalDataTask.js"></script>
 {% endblock %}
