@@ -13,13 +13,11 @@
 </head>
 
 <body class="vh-100 overflow-hidden d-flex flex-column">
-
+        
     {% include "navbar.html" %}
-
-    <div class="flex-grow-1 overflow-hidden" style="min-height: 0;">
+    <div class="main flex-grow-1 overflow-hidden">
         {% block content %}{% endblock %}
     </div>
-
 
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
