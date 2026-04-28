@@ -3,12 +3,16 @@ jQuery(document).ready(function () {
 
     /* For spinner */
     $('#inventory-spinner').hide();
+    $("#spinner-wrapper").hide();
     $(document).ajaxStop(function () {
         $('#inventory-spinner').hide();
+        $("#spinner-wrapper").hide();
+
     });
 
     $(document).ajaxStart(function () {
         $('#inventory-spinner').show();
+        $("#spinner-wrapper").show();
     });
 
     var map;
@@ -43,16 +47,16 @@ jQuery(document).ready(function () {
             url: '/all_areas',
             type: 'GET',
             traditional: true,
-            success: function (data) {                
+            success: function (data) {
                 var allAreasGeoJSON = data.all_areas_geoj;
-                
+
                 try {
                     // Parse GeoJSON if it's a string
-                    overlay_check =  document.getElementById("countyBordersSwitch").checked;
-                    if (overlay_check){
+                    overlay_check = document.getElementById("countyBordersSwitch").checked;
+                    if (overlay_check) {
                         var geoJSONObj = typeof allAreasGeoJSON === 'string' ? JSON.parse(allAreasGeoJSON) : allAreasGeoJSON;
                         console.log('Parsed GeoJSON:', geoJSONObj);
-                        
+
                         // Create a vector source from all areas GeoJSON
                         var vectorSource_allAreas = new ol.source.Vector({
                             features: new ol.format.GeoJSON().readFeatures(geoJSONObj, {
@@ -60,15 +64,15 @@ jQuery(document).ready(function () {
                                 featureProjection: 'EPSG:3857'
                             })
                         });
-                        
+
                         // Style function that uses the color property from each feature
-                        var styleFunction = function(feature) {
+                        var styleFunction = function (feature) {
                             var color = feature.get('color') || '#CCCCCC'; // Default gray if no color
                             var countyName = feature.get('COUNTY') || '';
-                            
+
                             // Convert hex color to rgba with reduced opacity (40%)
                             var rgbaColor = hexToRgba(color, 0.4);
-                            
+
                             return new ol.style.Style({
                                 fill: new ol.style.Fill({
                                     color: rgbaColor
@@ -97,7 +101,7 @@ jQuery(document).ready(function () {
                         };
 
                         // Helper function to convert hex to rgba
-                        var hexToRgba = function(hex, alpha) {
+                        var hexToRgba = function (hex, alpha) {
                             var r = parseInt(hex.slice(1, 3), 16);
                             var g = parseInt(hex.slice(3, 5), 16);
                             var b = parseInt(hex.slice(5, 7), 16);
@@ -127,12 +131,12 @@ jQuery(document).ready(function () {
     // Load all areas (counties) on page load
     $('#countyBordersSwitch').change(function () {
         const layersToRemove = [];
-        map.getLayers().forEach(function(layer, index) {
+        map.getLayers().forEach(function (layer, index) {
             if (index > 1) {
                 layersToRemove.push(layer);
             }
         });
-        layersToRemove.forEach(function(layer) {
+        layersToRemove.forEach(function (layer) {
             map.removeLayer(layer);
         });
         loadAllAreas();
@@ -193,14 +197,14 @@ jQuery(document).ready(function () {
 
     $("#tree-family").hide();
 
-    $('#sel_year2').on("change", function(){
+    $('#sel_year2').on("change", function () {
         var s = document.getElementById("sel_year");
         var e = document.getElementById("sel_year2")
 
         selectedStart = s.options[s.selectedIndex].text;
         selectedEnd = e.options[e.selectedIndex].text;
 
-        if (selectedStart !== 'Select' && selectedEnd !== 'Select'){
+        if (selectedStart !== 'Select' && selectedEnd !== 'Select') {
             $("#tree-family").toggle();
         }
     })
@@ -559,14 +563,14 @@ jQuery(document).ready(function () {
 
         // Remove only data layers from previous map generations, keep county layer
         const layersToRemove = [];
-        map.getLayers().forEach(function(layer, index) {
+        map.getLayers().forEach(function (layer, index) {
             // Keep layers 0-2 (OSM base layer, empty vector layer, and county layer)
             // Remove any layers added by previous data generations (index > 2)
             if (index > 2) {
                 layersToRemove.push(layer);
             }
         });
-        layersToRemove.forEach(function(layer) {
+        layersToRemove.forEach(function (layer) {
             map.removeLayer(layer);
         });
 
@@ -659,7 +663,7 @@ jQuery(document).ready(function () {
 
                 // Call updateLegend with minValue and maxValue
                 updateLegend(minValue, maxValue);
-               
+
             } else {
 
                 function getUniqueCategories(features, categoryField) {
@@ -734,7 +738,7 @@ jQuery(document).ready(function () {
                     $('#visElement').append(legendContent)
                 }
 
-                
+
 
                 const envvectorSource = new ol.source.Vector({
                     features: new ol.format.GeoJSON().readFeatures(envdata, {
@@ -756,7 +760,7 @@ jQuery(document).ready(function () {
 
                 treemap.addLayer(envvectorLayer);
 
-                
+
                 createLegend(categoryColors);
 
             }
@@ -905,7 +909,7 @@ jQuery(document).ready(function () {
     });
     */
     $('.treepropslidercheckbox').on('change', function () {
-        
+
         filtdata.quality = $(this).attr('value');
 
         // Select the second div using a proper selector
@@ -933,9 +937,9 @@ jQuery(document).ready(function () {
                     });
 
                     // Show the slider div
-                    $(sliderDiv).show(); 
+                    $(sliderDiv).show();
                 }
-            });   
+            });
         } else {
             // If checkbox is unchecked, hide the slider div
             $(sliderDiv).hide();
@@ -983,7 +987,7 @@ jQuery(document).ready(function () {
 
     $("#generateMapButton").on("click", function () {
 
-        filtdata.selectedmetric = 'presenceAbsence' ; //$('input[name="metricbtnradio"]:checked').val();
+        filtdata.selectedmetric = 'presenceAbsence'; //$('input[name="metricbtnradio"]:checked').val();
 
         // Helper function to get slider range if checkbox is checked
         function getSliderRange(checkbox, slider) {
@@ -1030,4 +1034,3 @@ jQuery(document).ready(function () {
 
 });
 
-    

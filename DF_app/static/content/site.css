@@ -820,3 +820,16 @@ main {
 .text-app-green { 
     color: #0f5232;
 }
+
+.spinner-wrapper {
+    position: absolute;
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color: rgba(128, 128, 128, 0.3);
+}
+
+.spinner-wrapper .custom-spinner {
+    position: static;
+}
