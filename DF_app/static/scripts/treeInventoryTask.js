@@ -27,7 +27,7 @@ jQuery(document).ready(function () {
                 })
             ],
             view: new ol.View({
-                center: ol.proj.fromLonLat([-72.809594, 43.979433]),
+                center: ol.proj.fromLonLat([-66.4455, 45.2538]),
                 zoom: 7,
                 projection: 'EPSG:3857'
             })
@@ -207,7 +207,7 @@ jQuery(document).ready(function () {
 
     $('#tree-filters').hide();
 
-    // 
+    /* Legacy
     $(".plusminuslevelonebutton").on("click", function () {
         $(this).toggleClass('active');
     });
@@ -359,6 +359,164 @@ jQuery(document).ready(function () {
             });
         } else { $('.level-three-filter-box .level-four-filter-box[id="' + divid + '"]').remove(); }
     });
+    */
+
+    // NEW CODE: Streamlined click handlers with dynamic loading and toggling of child groups
+    // Reveal property filters once the user actually picks a query target
+    $(document).on('click', '.taxon-bubble', function () {
+        if ($('#tree-filters').is(":hidden")) {
+            $('#tree-filters').show();
+        }
+    });
+
+    // ── Hide child groups initially ──
+    $('#angiospermfamilygroup').hide();
+    $('#gymnospermfamilygroup').hide();
+
+    // ── Top-level clade buttons (Hardwood / Softwood) ──
+    $('#angiosperms').click(function () {
+        toggleChildren('#angiospermfamilygroup', $(this), function (callback) {
+            $.ajax({
+                url: '/family',
+                data: { clade: "NCBITaxon_3398" },
+                type: 'POST',
+                traditional: true,
+                success: function (responds) {
+                    $('#angiospermfamilygroup').empty().append(responds.familylisthtml);
+                    callback();
+                }
+            });
+        });
+    });
+
+    $('#gymnosperms').click(function () {
+        toggleChildren('#gymnospermfamilygroup', $(this), function (callback) {
+            $.ajax({
+                url: '/family',
+                data: { clade: "NCBITaxon_1437180" },
+                type: 'POST',
+                traditional: true,
+                success: function (responds) {
+                    $('#gymnospermfamilygroup').empty().append(responds.familylisthtml);
+                    callback();
+                }
+            });
+        });
+    });
+
+    // ── Family click → select + load/toggle genera ──
+    $(document).on('click', '.text-button-leveltwo', function () {
+        var $btn = $(this);
+        var famname = $btn.attr('cname');
+        var $row = $btn.closest('.taxon-row');
+
+        // Determine clade by which group contains this row
+        var clade = $row.closest('#angiospermfamilygroup').length
+            ? "NCBITaxon_3398"
+            : "NCBITaxon_1437180";
+
+        var divid = famname.split(" ")[0] + 'genusgroup';
+
+        var $existing = $('#' + divid);
+        if ($existing.length) {
+            $existing.toggle();
+            $btn.toggleClass('expanded', $existing.is(':visible'));
+            return;
+        }
+
+        // Tag the new div with the clade so children can find it
+        var $newDiv = $('<div id="' + divid + '" class="level-three-filter-box" data-clade="' + clade + '"></div>');
+        $newDiv.insertAfter($row);
+
+        $.ajax({
+            url: '/genus',
+            data: { famname: famname, clade: clade },
+            type: 'POST',
+            traditional: true,
+            success: function (responds) {
+                $newDiv.empty().append(responds.genuslisthtml);
+                $btn.addClass('expanded');
+            }
+        });
+    });
+
+    // ── Genus click → select + load/toggle species ──
+    $(document).on('click', '.text-button-levelthree', function () {
+        var $btn = $(this);
+        var genname = $btn.attr('cname');
+        var $row = $btn.closest('.taxon-row');
+
+        // The genus row lives inside a .level-three-filter-box that we tagged with the clade
+        var clade = $row.closest('.level-three-filter-box').data('clade');
+
+        // Fallback in case data-clade is missing
+        if (!clade) {
+            clade = $row.prevAll('#angiospermfamilygroup, #gymnospermfamilygroup').first().attr('id') === 'angiospermfamilygroup'
+                ? "NCBITaxon_3398"
+                : "NCBITaxon_1437180";
+        }
+
+        var divid = clade + genname.replace(/\s+/g, '') + 'genusgroup';
+
+        var $existing = $('#' + divid);
+        if ($existing.length) {
+            $existing.toggle();
+            $btn.toggleClass('expanded', $existing.is(':visible'));
+            return;
+        }
+
+        var $newDiv = $('<div id="' + divid + '" class="level-four-filter-box"></div>');
+        $newDiv.insertAfter($row);
+
+        $.ajax({
+            url: '/species',
+            data: { genname: genname, clade: clade },
+            type: 'POST',
+            traditional: true,
+            success: function (responds) {
+                $newDiv.empty().append(responds.specieslisthtml);
+                $btn.addClass('expanded');
+            }
+        });
+    });
+
+    // ── Bubble click → select this taxon as the query target ──
+    $(document).on('click', '.taxon-bubble', function (e) {
+        e.stopPropagation();  // don't let the click bubble up to the row's button
+        var $bubble = $(this);
+        var $row = $bubble.closest('.taxon-row');
+        var $btn = $row.find('.taxbutton').first();
+
+        selectTaxon($btn);
+    });
+
+    // ── Helpers ──
+    function selectTaxon($btn) {
+        $('.taxon-row').removeClass('selected');
+        $btn.closest('.taxon-row').addClass('selected');
+
+        filtdata.cname = $btn.attr('cname');
+        var yearEl = document.getElementById("sel_year");
+        filtdata.year = yearEl.options[yearEl.selectedIndex].text;
+
+        console.log('Selected:', filtdata);
+    }
+
+    function toggleChildren(groupSelector, $btn, loader) {
+        var $group = $(groupSelector);
+        var isEmpty = $group.children().length === 0;
+
+        if (isEmpty) {
+            loader(function () {
+                $group.show();
+                $btn.addClass('expanded');
+            });
+        } else {
+            $group.toggle();
+            $btn.toggleClass('expanded', $group.is(':visible'));
+        }
+    }
+
 
     function fetchtreeData(filtdata) {
         return new Promise(function (resolve, reject) {
@@ -672,23 +830,24 @@ jQuery(document).ready(function () {
         const legendHtml = `
                 <div class="map-legend" id="map-legend">
                     <div>
-                    <h5>${filtdata.year} Inventory of ${filtdata.cname} in Maine</h5>
-                    <div><span style="background-color:#004D40; width:20px; height:10px; display:inline-block;"></span> 1-2 </div>
-                    <div><span style="background-color:#01019B; width:20px; height:10px; display:inline-block;"></span> 3-9 </div>
-                    <div><span style="background-color:#FFA500; width:20px; height:10px; display:inline-block;"></span> 10-19 </div>
-                    <div><span style="background-color:#FF7D00; width:20px; height:10px; display:inline-block;"></span> 20-49 </div>
-                    <div><span style="background-color:#D81B60; width:20px; height:10px; display:inline-block;"></span> 50+ </div>
+                        <h5>${filtdata.year} Inventory of ${filtdata.cname} in Maine</h5>
+                        <div><span style="background-color:#004D40; width:20px; height:10px; display:inline-block;"></span> 1-2 </div>
+                        <div><span style="background-color:#01019B; width:20px; height:10px; display:inline-block;"></span> 3-9 </div>
+                        <div><span style="background-color:#FFA500; width:20px; height:10px; display:inline-block;"></span> 10-19 </div>
+                        <div><span style="background-color:#FF7D00; width:20px; height:10px; display:inline-block;"></span> 20-49 </div>
+                        <div><span style="background-color:#D81B60; width:20px; height:10px; display:inline-block;"></span> 50+ </div>
                     </div>
                     <div>
-                    <h6>Range<h6>
-                    <p>${tmin} - ${tmax}<p>
-                </div >`;
+                        <h6>Range</h6>
+                        <p>${tmin} - ${tmax}</p>
+                    </div >
+                </div>`;
         $('#visElement').append(legendHtml);
     }
 
     // Store filter data as user selects options
     let filtdata = {};
-
+    /*
     $(".text-button-levelone").click(function () {
 
         // Remove highlight from all buttons with the "highlightable" class
@@ -744,14 +903,13 @@ jQuery(document).ready(function () {
         filtdata.year = e.options[e.selectedIndex].text;
         console.log(filtdata)
     });
-
+    */
     $('.treepropslidercheckbox').on('change', function () {
         
         filtdata.quality = $(this).attr('value');
 
         // Select the second div using a proper selector
-        var sliderlist = $(this).parent().find('.slider');
-        var sliderDiv = sliderlist[0]
+        var sliderDiv = $(this).closest('.card-body').find('.slider')[0];
 
         if ($(this).is(':checked')) {
             // If checkbox is checked, create the slider
@@ -789,8 +947,7 @@ jQuery(document).ready(function () {
         filtdata.quality = $(this).attr('value');
 
         // Select the second div using a proper selector
-        var categorygrouplist = $(this).parent().find('.classgroup');
-        var categorygroupDiv = categorygrouplist[0]
+        var categorygroupDiv = $(this).closest('.card-body').find('.classgroup')[0];
 
         if ($(this).is(':checked')) {
             $.ajax({

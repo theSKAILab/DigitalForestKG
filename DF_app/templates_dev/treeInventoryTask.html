@@ -1,133 +1,168 @@
-{% extends "layout.html" %}
+{% extends "sidebar.html" %}
 
-{% block content %}
+{% block main_content %}
+<div class="map-content h-100 w-100" id="visElement"></div>
 
-<div class="map-content" id="visElement"> </div>
-
-<!-- Spinner -->
-<div class="spinner-border custom-spinner" role="status" id="inventory-spinner">
-        <span class="visually-hidden">Loading...</span>
+<!-- Loading spinner -->
+<div class="spinner-border custom-spinner position-absolute top-50 start-50 translate-middle" role="status" id="inventory-spinner">
+    <span class="visually-hidden">Loading...</span>
 </div>
 
-<div class='instructions-outer'>
-    <div>
-        <button id="hideinstructions" data-bs-toggle="collapse" data-bs-target="#inventory-instructions">Hide/Show instructions</button>
-    </div>
-    <div class="instructions-content collapse show" id="inventory-instructions"> 
-        <p><b>This page allows you to see the distribution of one or more types of trees with specific properties in Maine in a specific time period.</b></p>
-        <p>For example, you can use this page to view the distribution of pine trees with diameter at breast between 20 and 25 in 2012.  You can select individual species or families of tree to view, then you can choose to constrain the trees based on certain properties (e.g. diameter at breast height, or whether they are alive or dead).  You will also choose a start and end year.  The resulting distribution map will be colored by the number of specified trees present in that area during the time period.</p>
-        <p><b>To use this page:</b>
-            <ol>
-            <li>Select a start and end year from the inventory year start and end drop down menus.</li>
-            <li>Select a type or category of tree species.  You can expand a category of trees (e.g. gymnosperms, pine family) by selecting the green plus signs on the left side, and you can select a category of trees by clicking the name (the category name will appear highlighted in green when selected).</li>
-            <li>Next, you may optionally choose to specify trees in your selected category with certain properties (e.g. tree total height) by clicking the check box next to the property name.</li> 
-            <li>Once selected, you will see a slider or a list of options for that property.  Select the values that you want to be shown in the prevalence map.</li>
-            <li>Press generate map and wait for the prevalence map to appear.</li>
-            </ol></p>
+<!-- Instructions panel 
+<div class="instructions-outer position-absolute top-0 end-0 m-3" style="max-width: 28rem; z-index: 1000;">
+    <button class="btn btn-sm btn-light border mb-2"
+            id="hideinstructions"
+            data-bs-toggle="collapse"
+            data-bs-target="#inventory-instructions"
+            aria-expanded="true"
+            aria-controls="inventory-instructions">
+        Hide / Show instructions
+    </button>
+    <div class="card collapse show" id="inventory-instructions">
+        <div class="card-body">
+            <p class="fw-bold">This page allows you to see the distribution of one or more types of trees with specific properties in Maine in a specific time period.</p>
+            <p>For example, you can use this page to view the distribution of pine trees with diameter at breast between 20 and 25 in 2012. You can select individual species or families of tree to view, then constrain the trees based on certain properties (e.g. diameter at breast height, or whether they are alive or dead). The resulting distribution map will be colored by the number of specified trees present in that area during the time period.</p>
+            <p class="fw-bold mb-2">To use this page:</p>
+            <ol class="mb-0">
+                <li>Select a start and end year from the inventory year drop-downs.</li>
+                <li>Select a type or category of tree species. Expand a category using the green plus signs; click the name to select it.</li>
+                <li>Optionally specify trees with certain properties by checking the box next to a property name.</li>
+                <li>Use the slider or option list that appears to constrain the values shown.</li>
+                <li>Press <strong>Generate Map</strong> and wait for the prevalence map to appear.</li>
+            </ol>
+        </div>
     </div>
 </div>
+-->
+{% endblock %}
 
 
-<div class="filter-content">
-    <img class="d-block mx-auto mb-4" src="/static/images/INSPIRES_logo.png" alt="" width="72" height="57">
-    <hr>
-    <div class="inner-menu">
-        <a href="{{url_for('environmentalDataTask')}}">
-            <img style="padding:2px;" src="/static/images/env_icon.png" alt="" width="50" height="50" title="Environmental Data Exploration">
-            <div class="caption">Environmental Data</div>
-        </a>
-        <a href="{{url_for('treeinventorytask')}}" style="border:1px solid black;">
-            <img style="padding:2px;" src="/static/images/tree_inventory.png" alt="" width="50" height="50" title="Tree Inventory Data Exploration">
-            <div class="caption">Tree Inventory Data</div>
-        </a>
-        <a href="{{url_for('treepreferencestask')}}">
-            <img style="padding:2px;" src="/static/images/analysis.png" alt="" width="50" height="50" title="Analyses of Tree Preference Habitat">
-            <div class="caption">Tree Environmental Preferences</div>
-        </a>
-    </div>
-    <hr>
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="scientificNamesSwitch">
-        <label class="form-check-label" for="scientificNamesSwitch">Use scientific names</label>
-    </div>
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="countyBordersSwitch">
-        <label class="form-check-label" for="countyBordersSwitch">Overlay county borders</label>
-    </div>
-    <hr>
-    <h6>Inventory Year</h6>
-    <div class="input-group mb-3">
-        <div class="input-group-prepend" id="inventoryyearcheckbox">
-            <label class="input-group-text" for="inputGroupSelect01">From</label>
-        </div>
-        <select class="form-select" id="sel_year">
-            <option id="selyearinitial" selected onselect="markStartClicked()">Select</option>
-        </select>
-    </div>
-    <div class="input-group mb-3">
-        <div class="input-group-prepend" id="inventoryyearcheckbox2">
-            <label class="input-group-text" for="inputGroupSelect01">To</label>
-        </div>
-        <select class="form-select" id="sel_year2">
-            <option id="selyearinitial2" selected onselect="markEndClicked()">Select</option>
-        </select>
-    </div>
-    <hr>
-    <div class="container" id="tree-family">
-        <div class="level-one-box">
-            <button class="plusminuslevelonebutton" type="button" id="angiospermfamily"><span></span></button>
-            <button class="text-button-levelone taxbutton" cname="angiosperms" sname="Magnoliopsida" value="NCBITaxon_3398" id="angiosperms">Hardwood</button>
-        </div>
-        <div class="level-two-filter-box" id="angiospermfamilygroup"></div>
-        <hr>
-        <div class="level-one-box">
-            <button class="plusminuslevelonebutton" type="button" id="gymnospermfamily"><span></span></button>
-            <button class="text-button-levelone taxbutton" cname="gymnosperms" sname="Acrogymnospermae" value="NCBITaxon_1437180" id="gymnosperms">Softwood</button>
-        </div>
-        <div class="level-two-filter-box" id="gymnospermfamilygroup"></div>
-    </div>
-    <hr>
-    <div class="" id="tree-filters">
-        <div class="container box-border">
-            <div id="check_box">
-                <input class="form-check-input flex-shrink-0  treefilterschkbox treepropslidercheckbox" type="checkbox" id="dbhcheckbox" name="dbhcheck" value="TreeDiameterAtBreastHeight">
-                <span>
-                    Diameter at Breast Height
-                </span>
-                <div class="slider" id="dbhslider"></div>
-            </div>
-        </div>
-        <hr>
-        <div class="container box-border treefilters">
-            <div id="check_box">
-                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropslidercheckbox" type="checkbox" id="tahcheckbox" name="tahcheck" value="TreeActualHeight">
-                <span>
-                    Tree Actual Height
-                </span>
-                <div class="slider" id="tahslider"></div>
-            </div>
-        </div>
-        <hr>
-        <div class="container box-border">
-            <div id="check_box">
-                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropslidercheckbox" type="checkbox" id="tthcheckbox" name="tthcheck" value="TreeTotalHeight">
-                <span>
-                    Tree Total Height
-                </span>
-                <div class="slider" id="tthslider"></div>
-            </div>
-        </div>
-        <hr>
-        <div class="container box-border">
-            <div id="check_box">
-                <input class="form-check-input flex-shrink-0 treefilterschkbox treepropclassgroupcheckbox" type="checkbox" id="tscheckbox" value="TreeStatus">
-                <span>
-                    Tree Status
-                </span>
-                <div class="list-group classgroup" style="padding-top: 0; padding-bottom: 0; margin-bottom: 0; margin-top: 0;" id="tsgroup"></div>
-            </div>
-        </div>
+{% block sidebar_filters %}
 
+<!-- Display options -->
+<h6 class="text-uppercase text-body-secondary small fw-bold mb-2">Display options</h6>
+<div class="form-check form-switch mb-1">
+    <input class="form-check-input" type="checkbox" id="scientificNamesSwitch">
+    <label class="form-check-label" for="scientificNamesSwitch">Use scientific names</label>
+</div>
+<div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" id="countyBordersSwitch">
+    <label class="form-check-label" for="countyBordersSwitch">Overlay county borders</label>
+</div>
+
+<hr>
+
+<!-- Inventory year -->
+<h6 class="text-uppercase text-body-secondary small fw-bold mb-2">Inventory year</h6>
+<div class="input-group mb-2">
+    <span class="input-group-text" id="inventoryyearcheckbox">From</span>
+    <select class="form-select" id="sel_year" aria-label="Start year">
+        <option id="selyearinitial" selected>Select</option>
+    </select>
+</div>
+<div class="input-group mb-3">
+    <span class="input-group-text" id="inventoryyearcheckbox2">To</span>
+    <select class="form-select" id="sel_year2" aria-label="End year">
+        <option id="selyearinitial2" selected>Select</option>
+    </select>
+</div>
+
+<hr>
+
+<!-- Tree family -->
+<h6 class="text-uppercase text-body-secondary small fw-bold mb-2">Tree family</h6>
+<div id="tree-family" class="mb-3">
+
+    <div class="taxon-row d-flex align-items-center gap-2 mb-1">
+        <span class="taxon-bubble" aria-hidden="true"></span>
+        <button class="taxbutton text-button-levelone taxon-toggle btn btn-sm btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+                type="button"
+                cname="angiosperms"
+                sname="Magnoliopsida"
+                value="NCBITaxon_3398"
+                id="angiosperms"
+                data-level="clade">
+            <span class="taxon-label">Hardwood</span>
+            <span class="taxon-chevron" aria-hidden="true">▸</span>
+        </button>
+    </div>
+    <div class="level-two-filter-box" id="angiospermfamilygroup"></div>
+
+    <div class="taxon-row d-flex align-items-center gap-2 mb-1 mt-2">
+        <span class="taxon-bubble" aria-hidden="true"></span>
+        <button class="taxbutton text-button-levelone taxon-toggle btn btn-sm btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+                type="button"
+                cname="gymnosperms"
+                sname="Acrogymnospermae"
+                value="NCBITaxon_1437180"
+                id="gymnosperms"
+                data-level="clade">
+            <span class="taxon-label">Softwood</span>
+            <span class="taxon-chevron" aria-hidden="true">▸</span>
+        </button>
+    </div>
+    <div class="level-two-filter-box" id="gymnospermfamilygroup"></div>
+
+</div>
+
+<!-- Tree property filters -->
+<h6 class="text-uppercase text-body-secondary small fw-bold mb-2">Tree properties</h6>
+<div id="tree-filters" class="d-flex flex-column gap-2 mb-3">
+
+    <div class="card">
+        <div class="card-body py-2">
+            <div class="form-check">
+                <input class="form-check-input treefilterschkbox treepropslidercheckbox"
+                       type="checkbox" id="dbhcheckbox" name="dbhcheck" value="TreeDiameterAtBreastHeight">
+                <label class="form-check-label" for="dbhcheckbox">Diameter at Breast Height</label>
+            </div>
+            <div class="slider mt-2" id="dbhslider"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body py-2">
+            <div class="form-check">
+                <input class="form-check-input treefilterschkbox treepropslidercheckbox"
+                       type="checkbox" id="tahcheckbox" name="tahcheck" value="TreeActualHeight">
+                <label class="form-check-label" for="tahcheckbox">Tree Actual Height</label>
+            </div>
+            <div class="slider mt-2" id="tahslider"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body py-2">
+            <div class="form-check">
+                <input class="form-check-input treefilterschkbox treepropslidercheckbox"
+                       type="checkbox" id="tthcheckbox" name="tthcheck" value="TreeTotalHeight">
+                <label class="form-check-label" for="tthcheckbox">Tree Total Height</label>
+            </div>
+            <div class="slider mt-2" id="tthslider"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body py-2">
+            <div class="form-check">
+                <input class="form-check-input treefilterschkbox treepropclassgroupcheckbox"
+                       type="checkbox" id="tscheckbox" value="TreeStatus">
+                <label class="form-check-label" for="tscheckbox">Tree Status</label>
+            </div>
+            <div class="list-group classgroup mt-2" id="tsgroup"></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="d-grid">
+    <button class="btn btn-primary" id="generateMapButton" type="button">Generate Map</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/scripts/treeInventoryTask.js"></script>
+
+{% endblock %}
         <!-- Abundance isn't loading
         <hr>
         <h6>Metric</h6>
@@ -414,7 +449,8 @@
             </div>
         </div>
     </div> -->
-    <hr>
+
+    <!--     <hr>
     <button class="btn btn-primary" id="generateMapButton" type="button">Generate Map</button>
 </div>
 
@@ -422,4 +458,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/static/scripts/treeInventoryTask.js"></script>
 
-{% endblock %}
+-->
