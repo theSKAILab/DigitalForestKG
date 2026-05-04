@@ -1,11 +1,10 @@
 {% extends "sidebar.html" %}
 
-{% block main_content %}
-<div class="map-content h-100 w-100" id="visElement"></div>
-
-<!-- Loading spinner -->
-<div class="spinner-border custom-spinner position-absolute top-50 start-50 translate-middle" role="status" id="inventory-spinner">
-    <span class="visually-hidden">Loading...</span>
+{% block main_content %}                
+<div class="d-flex flex-column h-100 overflow-hidden" style="flex: 5 1 0;">
+    <div class="map-content"id="visElement" style="position: initial;">
+        {% include "spinner.html"%}
+    </div>
 </div>
 
 <!-- Instructions panel 
