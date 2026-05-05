@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="task-page">
+
+  <div class="page-header">
+    <h2>Tree Inventory Filter Table</h2>
+
+    <div class="header-actions">
+      <select id="inventoryYearSelect" class="search-input">
+        <option value="">Select year...</option>
+      </select>
+
+      <input
+        id="treeNameInput"
+        class="search-input"
+        type="text"
+        list="treeNameOptions"
+        placeholder="Search tree species..."
+      />
+
+      <datalist id="treeNameOptions"></datalist>
+
+      <select id="metricSelect" class="search-input">
+        <option value="presenceAbsence">Presence / Absence</option>
+        <option value="abundance">Abundance</option>
+      </select>
+
+      <button type="button" class="outline-btn" id="loadInventoryFiltersBtn">
+        Load Filters
+      </button>
+    </div>
+  </div>
+
+  <div class="inventory-layout">
+
+    <aside class="left-panel">
+      <h4>Tree Inventory</h4>
+      <p class="small-text">
+        Select a year and tree species, then choose inventory filters.
+      </p>
+
+      <div class="help-card">
+        <h4>How to use</h4>
+        <ol>
+          <li>Select an inventory year.</li>
+          <li>Search and select a tree species.</li>
+          <li>Load available filter ranges.</li>
+          <li>Select filters from the table.</li>
+          <li>Apply filters to create inventory map data.</li>
+        </ol>
+      </div>
+    </aside>
+
+    <main class="table-panel">
+
+      <table class="filter-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Inventory Filter</th>
+            <th>Min</th>
+            <th>Max / Options</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+
+        <tbody id="inventoryFilterTableBody">
+          <tr>
+            <td colspan="5" class="empty-row">
+              Select year and species, then click Load Filters.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-footer">
+        <button id="applyInventoryFiltersBtn" class="primary-btn" type="button">
+          Apply inventory filters
+        </button>
+
+        <span id="selectedInventoryFilterCount">0 filters selected</span>
+
+        <span id="inventoryStatus" class="status-text"></span>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/scripts/treeInventoryTask.js"></script>
+
+{% endblock %}
