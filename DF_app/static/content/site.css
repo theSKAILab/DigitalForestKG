@@ -448,20 +448,14 @@ main {
     z-index: 0;
 }
 
-#map-legend {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 1500;
-
-    background-color: rgba(255, 255, 255, 0.95);
-    border: 1px solid #dee2e6;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    max-width: 18rem;
-    pointer-events: auto;
+.map-legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
     .map-legend div {
@@ -752,87 +746,6 @@ main {
     display: flex;
     justify-content: space-between;
 }
-
-/* Bubble — now a clickable button-like element */
-.taxon-bubble {
-    display: inline-block;
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 50%;
-    background-color: transparent;
-    border: 2px solid #ced4da;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-}
-
-.taxon-bubble:hover {
-    border-color: #198754;
-    background-color: rgba(25, 135, 84, 0.1);
-    transform: scale(1.1);
-}
-
-.taxon-bubble:active {
-    transform: scale(0.95);
-}
-
-/* Filled bubble for the currently selected taxon */
-.taxon-row.selected .taxon-bubble {
-    background-color: #198754;
-    border-color: #198754;
-    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.25);
-}
-
-/* Drop the row-level highlight — only the bubble indicates selection now */
-/* (Remove or comment out the old rule:)
-.taxon-row.selected .taxbutton {
-    background-color: #d1e7dd;
-    border-color: #198754;
-    color: #0a3622;
-    font-weight: 500;
-}
-*/
-
-/* Chevron rotation when expanded — unchanged */
-.taxon-chevron {
-    display: inline-block;
-    transition: transform 0.15s ease;
-    font-size: 0.75rem;
-    color: #6c757d;
-    margin-left: 0.5rem;
-}
-.taxon-toggle.expanded .taxon-chevron {
-    transform: rotate(90deg);
-}
-
-.bg-footer-green {
-    background-color: #0f5232;
-}
-
-.bg-app-green-secondary {
-    background-color: #f4f7f2;
-}
-
-.bg-app-green-badge {
-    background-color: #d4eac8;
-}
-
-.text-app-green { 
-    color: #0f5232;
-}
-
-.spinner-wrapper {
-    position: absolute;
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    background-color: rgba(128, 128, 128, 0.3);
-}
-
-.spinner-wrapper .custom-spinner {
-    position: static;
-}
 /* ── Tree Inventory Filter Table ── */
 
 /* Shared input/control border style */
@@ -1020,4 +933,79 @@ main {
   font-weight: 700;
   background-color: #d9eadf;
   color: #2d6a4f;
+}
+
+/* ── Tree Preference Filter Table ── */
+
+.tree-preference-layout {
+  display: grid;
+  grid-template-columns: 17.5rem 1fr;
+  background: #ffffff;
+  min-height: 40rem;
+}
+
+.tree-list {
+  max-height: 22.5rem;
+  overflow-y: auto;
+  border: 1px solid #eeeeee;
+  margin-top: 0.75rem;
+}
+
+.tree-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #eeeeee;
+  padding: 0.625rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #263238;
+}
+
+.tree-option:hover {
+  background: #eef7e7;
+}
+
+.tree-option.active {
+  background: #e6f2d9;
+  font-weight: 600;
+}
+
+.highlight-help {
+  outline: 3px solid #0b5d35;
+  transition: outline 0.2s ease;
+}
+
+.sort-label {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: #0b5d35;
+}
+
+.importance-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.importance-high {
+  background-color: #f8d7da;
+  color: #8a1f2d;
+}
+
+.importance-medium {
+  background-color: #fff2cc;
+  color: #8a6d1f;
+}
+
+.importance-low {
+  background-color: #d9eadf;
+  color: #2d6a4f;
+}
+
+.preference-checkbox {
+  cursor: pointer;
 }
