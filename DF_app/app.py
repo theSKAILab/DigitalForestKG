@@ -569,9 +569,7 @@ def userpara():
         ?region rdf:type dfds:S2Cell_level13;
             dfds:cellID ?cellID;
             geo:hasGeometry [geo:asWKT ?geom].
-       FILTER (geof:sfIntersects(?geom, %s)).""" % (
-            wkt_text
-        )
+       FILTER (geof:sfIntersects(?geom, %s)).""" % (wkt_text)
 
     processeddata = {}
     for key, value in userparadata.items():
@@ -598,13 +596,10 @@ def userpara():
     if aspect_key in processeddata:
         sel_aspect = processeddata["aspect"]
         sel_aspect_value = "'" + "','".join(map(str, sel_aspect)) + "'"
-        aspect_query = (
-            """[] a dfds:DominantAspectClass;
+        aspect_query = """[] a dfds:DominantAspectClass;
                             stad:hasSpatialCoverage ?region;
                             stad:hasQualitativeValue [rdfs:label ?aspectclass].
-        FILTER (?aspectclass IN (%s) )"""
-            % sel_aspect_value
-        )
+        FILTER (?aspectclass IN (%s) )""" % sel_aspect_value
 
         filtered_region_queryString = filtered_region_queryString + "\n" + aspect_query
 
@@ -612,13 +607,10 @@ def userpara():
     if dr_key in processeddata:
         sel_drainage = processeddata["soildrainage"]
         sel_soildrainage_value = "'" + "','".join(map(str, sel_drainage)) + "'"
-        dr_query = (
-            """[] a dfds:DominantSoilDrainageClass;
+        dr_query = """[] a dfds:DominantSoilDrainageClass;
                             stad:hasSpatialCoverage ?region;
                             stad:hasQualitativeValue [rdfs:label ?soildrainage].
-        FILTER (?soildrainage IN (%s) )"""
-            % sel_soildrainage_value
-        )
+        FILTER (?soildrainage IN (%s) )""" % sel_soildrainage_value
 
         filtered_region_queryString = filtered_region_queryString + "\n" + dr_query
 
@@ -626,13 +618,10 @@ def userpara():
     if lit_key in processeddata:
         sel_lithology = processeddata["lithology"]
         sel_lithology_value = "'" + "','".join(map(str, sel_lithology)) + "'"
-        lit_query = (
-            """[] a dfds:GeneralizedLithology;
+        lit_query = """[] a dfds:GeneralizedLithology;
                             stad:hasSpatialCoverage ?region;
                             stad:hasQualitativeValue [rdfs:label ?lithology].
-        FILTER (?lithology IN (%s) )"""
-            % sel_lithology_value
-        )
+        FILTER (?lithology IN (%s) )""" % sel_lithology_value
 
         filtered_region_queryString = filtered_region_queryString + "\n" + lit_query
 
@@ -640,13 +629,10 @@ def userpara():
     if landcover_key in processeddata:
         sel_landcover = processeddata["landcover"]
         sel_landcover_value = "'" + "','".join(map(str, sel_landcover)) + "'"
-        landcover_query = (
-            """[] a dfds:GeneralizedLandCover;
+        landcover_query = """[] a dfds:GeneralizedLandCover;
                             stad:hasSpatialCoverage ?region;
                             stad:hasQualitativeValue [rdfs:label ?landcover].
-        FILTER (?landcover IN (%s) )"""
-            % sel_landcover_value
-        )
+        FILTER (?landcover IN (%s) )""" % sel_landcover_value
 
         filtered_region_queryString = (
             filtered_region_queryString + "\n" + landcover_query
@@ -1062,8 +1048,7 @@ def family():
 
     clade = request.form.get("clade")
 
-    family_querystring = (
-        """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    family_querystring = """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX obo: <http://purl.obolibrary.org/obo/>
     PREFIX ncbitaxon: <http://purl.obolibrary.org/obo/ncbitaxon#>
     PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
@@ -1073,9 +1058,7 @@ def family():
          ncbitaxon:has_rank obo:NCBITaxon_family;
          oboInOwl:hasExactSynonym ?coname;
          rdfs:label ?scname.
-    }groupby ?fam order by ASC(?cname)"""
-        % clade
-    )
+    }groupby ?fam order by ASC(?cname)""" % clade
 
     sparql_endpoint.setQuery(family_querystring)
 
@@ -1103,8 +1086,7 @@ def genus():
     famname = request.form.get("famname")
     clade = request.form.get("clade")
 
-    genus_querystring = (
-        """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    genus_querystring = """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX obo: <http://purl.obolibrary.org/obo/>
     PREFIX ncbitaxon: <http://purl.obolibrary.org/obo/ncbitaxon#>
     PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
@@ -1114,9 +1096,7 @@ def genus():
     ?genus ncbitaxon:has_rank obo:NCBITaxon_genus;
          oboInOwl:hasExactSynonym ?coname;
          rdfs:label ?scname.
-    }groupby ?genus order by ASC(?cname) """
-        % famname
-    )
+    }groupby ?genus order by ASC(?cname) """ % famname
 
     sparql_endpoint.setQuery(genus_querystring)
 
@@ -1144,8 +1124,7 @@ def species():
     genname = request.form.get("genname")
     clade = request.form.get("clade")
 
-    species_querystring = (
-        """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    species_querystring = """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX obo: <http://purl.obolibrary.org/obo/>
     PREFIX ncbitaxon: <http://purl.obolibrary.org/obo/ncbitaxon#>
     PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
@@ -1155,9 +1134,7 @@ def species():
     ?spe ncbitaxon:has_rank obo:NCBITaxon_species;
          oboInOwl:hasExactSynonym ?coname;
          rdfs:label ?scname.
-    }groupby ?spe order by ASC(?cname) """
-        % genname
-    )
+    }groupby ?spe order by ASC(?cname) """ % genname
 
     sparql_endpoint.setQuery(species_querystring)
 
@@ -1271,14 +1248,11 @@ def treeclassmap():
     if "selts" in processeddata:
         sel_ts = processeddata["selts"]
         sel_ts_value = "'" + "','".join(map(str, sel_ts)) + "'"
-        ts_query = (
-            """?snapshot fio:includeRecord ?tsrecord.
+        ts_query = """?snapshot fio:includeRecord ?tsrecord.
                             ?tsrecord stad:hasQualityKind dfds:TreeStatus;
             		                stad:hasQualitativeValue ?classvalue.
                             ?classvalue rdfs:label ?tsclass.
-        FILTER (?tsclass IN (%s) )"""
-            % sel_ts_value
-        )
+        FILTER (?tsclass IN (%s) )""" % sel_ts_value
 
         queryString = queryString + "\n" + ts_query
 
@@ -1647,8 +1621,7 @@ def treepreferences():
 
     selectedtree = request.form.get("selectedtree")
 
-    treepref_querystring = (
-        """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    treepref_querystring = """ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX epo: <http://purl.org/spatialai/prefenvo/v1/core/>
     PREFIX dfds: <http://spatialai.org/digitalforest/datasets/core/>
@@ -1668,9 +1641,7 @@ def treepreferences():
                epo:maximumPreference [qudt:numericValue ?maximumpreference].
         ?predimp epo:hasImportanceRank [rdfs:label ?rank].
         
-        filter(?tree = "%s")} """
-        % selectedtree
-    )
+        filter(?tree = "%s")} """ % selectedtree
 
     sparql_endpoint.setQuery(treepref_querystring)
 
@@ -1870,6 +1841,34 @@ def inject_tasks():
             {
                 "title": "1 Min",
                 "subtitle": "Avg. query time",
+            },
+        ],
+        "about_info": [
+            {
+                "title": "3",
+                "subtitle": "Data modules",
+            },
+            {
+                "title": "50+",
+                "subtitle": "Filter variables",
+            },
+            {
+                "title": "ME",
+                "subtitle": "Coverage area",
+            },
+        ],
+        "people_info": [
+            {
+                "title": "Platform Developer",
+                "subtitle": "Knowledge Graph & Web Interface",
+            },
+            {
+                "title": "John Smith",
+                "subtitle": "Lorem Ipsum",
+            },
+            {
+                "title": "Jane Smith",
+                "subtitle": "Testing 123",
             },
         ],
     }
