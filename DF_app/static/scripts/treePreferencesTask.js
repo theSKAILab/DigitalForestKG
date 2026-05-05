@@ -28,7 +28,7 @@ jQuery(document).ready(function () {
             ],
             view: new ol.View({
                 //center: ol.proj.fromLonLat([-72.809594, 43.979433]),
-                center: [-72.809594, 43.979433],
+                center: [-66.4455, 45.2538],
                 zoom: 7,
                 projection: 'EPSG:4326'
             })

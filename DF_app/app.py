@@ -1826,15 +1826,54 @@ def feasibiltycheck():
     return jsonify({'html_map':html_map})
 '''
 
+
 @app.context_processor
 def inject_tasks():
     return {
         "app_tasks": [
-            {"endpoint": "environmentalDataTask", "label": "Environmental Data",             "icon": "/static/images/env_icon.png",       "title": "Environmental Data"},
-            {"endpoint": "treeinventorytask",     "label": "Tree Inventory Data",            "icon": "/static/images/tree_inventory.png", "title": "Tree Inventory Data "},
-            {"endpoint": "treepreferencestask",   "label": "Tree Environmental Preferences", "icon": "/static/images/analysis.png",       "title": "Tree Environmental Preferences"},
-        ]
+            {
+                "endpoint": "environmentalDataTask",
+                "data": "Environment Data",
+                "label": "Environmental Data",
+                "icon": "/static/images/env_icon.png",
+                "title": "Environmental Data",
+            },
+            {
+                "endpoint": "treeinventorytask",
+                "data": "Tree Data",
+                "label": "Tree Inventory Data",
+                "icon": "/static/images/tree_inventory.png",
+                "title": "Tree Inventory Data ",
+            },
+            {
+                "endpoint": "treepreferencestask",
+                "data": "Preference Data",
+                "label": "Tree Environmental Preferences",
+                "icon": "/static/images/analysis.png",
+                "title": "Tree Environmental Preferences",
+            },
+        ],
+        "active_task": request.endpoint,
+        "home_info": [
+            {
+                "title": "3",
+                "subtitle": "Data Modules",
+            },
+            {
+                "title": "50+",
+                "subtitle": "Filter Variables",
+            },
+            {
+                "title": "CSV & Map",
+                "subtitle": "Export Formats",
+            },
+            {
+                "title": "1 Min",
+                "subtitle": "Avg. query time",
+            },
+        ],
     }
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="localhost", port=5000)
