@@ -833,3 +833,9 @@ main {
 .spinner-wrapper .custom-spinner {
     position: static;
 }
+
+.card-about {
+    color: #0f5232;
+    border-color: #0f5232;
+    background-color: #d4eac8;
+}
