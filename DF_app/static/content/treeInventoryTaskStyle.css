@@ -2,21 +2,21 @@
     display: inline-block;
     width: 0;
     height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 6px solid #233354;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-top: 0.375rem solid #233354;
     position: relative;
-    left: 7px;
+    left: 0.4375rem;
 }
 
 .js-arrow-up {
     display: inline-block;
     width: 0;
     height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 6px solid #233354;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-bottom: 0.375rem solid #233354;
     position: relative;
-    left: 6px;
-    bottom: 12px;
+    left: 0.375rem;
+    bottom: 0.75rem;
 }
