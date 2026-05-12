@@ -1248,3 +1248,37 @@ main {
     border-color: #0f5232;
     background-color: #d4eac8;
 }
+
+.table-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#mapView .map-content {
+  width: 100%;
+  height: 100%;
+}
+
+#mapView .map-content img,
+#mapView .map-content svg {
+  max-width: 100%;
+  height: auto;
+}
+
+#visElement #spinner-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 500;
+}
