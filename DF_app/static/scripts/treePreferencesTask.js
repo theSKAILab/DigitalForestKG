@@ -1,357 +1,246 @@
-jQuery(document).ready(function () {
+let selectedPreferenceFactors = [];
+let allTrees = [];
 
-    $("#loading-message").hide()
+function getImportanceClass(rank) {
+  if (!rank) return "importance-low";
+  const value = String(rank).toLowerCase();
+  if (value.includes("high")) return "importance-high";
+  if (value.includes("medium")) return "importance-medium";
+  return "importance-low";
+}
 
-    /* For spinner */
-    $('#preferences-spinner').hide();
-    $(document).ajaxStop(function () {
-        $('#preferences-spinner').hide();
+function updateSelectedFactorCount() {
+  const count = selectedPreferenceFactors.length;
+  document.getElementById("selectedFactorCount").textContent =
+    `${count} factor${count === 1 ? "" : "s"} selected`;
+}
+
+function renderTreeList(trees) {
+  const treeList = document.getElementById("treeSpeciesList");
+  treeList.innerHTML = "";
+
+  if (!trees || trees.length === 0) {
+    treeList.innerHTML = `<p class="small-text">No trees found.</p>`;
+    return;
+  }
+
+  trees.forEach(tree => {
+    const button = document.createElement("button");
+    button.className = "tree-option";
+    button.type = "button";
+    button.textContent = tree.name;
+    button.dataset.treeName = tree.name;
+
+    button.addEventListener("click", function () {
+      document.querySelectorAll(".tree-option").forEach(item => {
+        item.classList.remove("active");
+      });
+      this.classList.add("active");
+      loadTreePreferences(tree.name);
     });
 
-    $(document).ajaxStart(function () {
-        $('#preferences-spinner').show();
-    });
+    treeList.appendChild(button);
+  });
+}
 
-    var map;
+function loadTreesWithPreferences() {
+  $.ajax({
+    url: "/treeswithpreferences",
+    method: "GET",
+    success: function (response) {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = response.treeslisthtml;
 
-    // Initialize the map
-    function initMap() {
-        map = new ol.Map({
-            target: 'visElement',
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.OSM()
-                }),
-                new ol.layer.Vector({
-                    source: new ol.source.Vector()
-                })
-            ],
-            view: new ol.View({
-                //center: ol.proj.fromLonLat([-72.809594, 43.979433]),
-                center: [-66.4455, 45.2538],
-                zoom: 7,
-                projection: 'EPSG:4326'
-            })
-        });
-    }
+      allTrees = [];
 
-    // Initialize the map
-    initMap();
-
-    $(".pref-table-window").hide();
-
-    $.ajax({
-        type: 'GET',
-        url: '/treeswithpreferences',
-        success: function (data) {
-            $("#treesWithPreferencesgroup").empty();
-            $("#treesWithPreferencesgroup").append(data.treeslisthtml);
-        },
-
-    });
-
-    /*
-    function insertSpacesBetweenWords(inputString) {
-        // Use regular expression to insert spaces between words
-        return inputString.replace(/([a-z])([A-Z])/g, '$1 $2');
-    }
-
-    function extractCluster(text) {
-        var match = text.match(/Cluster\d+/); // Use regular expression to find "Cluster" followed by a number
-        return match ? match[0] : null; // Return the matched text or null if no match
-    }
-
-    function extractFromCluster(text) {
-        var index = text.indexOf('Cluster');
-        return index !== -1 ? text.substring(index) : null; // Return the substring from 'Cluster' onwards or null if not found
-    }
-    
-    // Add change event listener to the parent container
-    $('#treesWithPreferencesgroup').on('change', 'input[type="radio"]', function () {
-        // Check if the radio button is checked
-        if ($(this).is(':checked')) {
-            // Get the value of the checked radio button
-            selectedtree = $(this).val();
-
-            // Perform the desired action with the selected value
-            console.log("Selected value: " + selectedtree);
-
-            $.ajax({
-                type: 'POST',
-                data: { selectedtree: selectedtree },
-                url: '/treepreferences',
-                traditional: true,
-                success: function (data) {
-                    var prefdata = JSON.parse(data['pref_data'])
-                    //var prefdata = data['pref_data']
-                    console.log(prefdata)
-                    $('#treePreferencestables').empty();
-                    //var uniqueClusters = [...new Set(prefdata.map(item => item.cluster))];
-                    var uniqueClusters = [...new Set(prefdata.cluster)];
-                    console.log(uniqueClusters)
-
-                    // Create HTML tables for each unique cluster
-                    uniqueClusters.forEach(function (cluster) {
-                        //var table_title = insertSpacesBetweenWords(cluster)
-                        var table_title = extractFromCluster(cluster)
-                        // Filter indices for the current cluster
-                        var indices = prefdata.cluster.reduce((acc, val, index) => {
-                            if (val === cluster) acc.push(index);
-                            return acc;
-                        }, []);
-                        console.log(indices)
-
-                        // Create table HTML
-                        var tableHTML = '<h5 class="table-title">' + table_title + '</h5>';
-                        tableHTML += '<table><thead><tr><th class="select-column"></th><th class="variable-column">Environmental Variable</th><th class="minimum-column">Minimum</th><th class="maximum-column">Maximum</th><th class="rank-column">Importance Rank</th></tr></thead><tbody>';
-
-                        // Populate table with data for the current cluster
-                        indices.forEach(function (index) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td class="select-column"><input type="checkbox" name="prefvariable" data-min="' + prefdata.minimum[index] + '" data-max="' + prefdata.maximum[index] + '" value="' + prefdata.variable[index] + '"></td>';
-                            tableHTML += '<td class="variable-column">' + prefdata.variable[index] + '</td>';
-                            tableHTML += '<td class="minimum-column">' + prefdata.minimum[index] + '</td>';
-                            tableHTML += '<td class="maximum-column">' + prefdata.maximum[index] + '</td>';
-                            tableHTML += '<td class="rank-column">' + prefdata.rank[index] + '</td>';
-                            
-                            tableHTML += '</tr>';
-                        });
-
-                        tableHTML += '</tbody></table>';
-
-                        // Append table HTML to the container
-                        $('#treePreferencestables').append(tableHTML);
-                        
-                    });
-
-                    $('.pref-table-window').show();
-                },
-
-            });
-        };
-    });
-    */
-
-    // Add change event listener to the parent container
-    $('#treesWithPreferencesgroup').on('change', 'input[type="radio"]', function () {
-
-        // Check if the radio button is checked
-        if ($(this).is(':checked')) {
-            // Get the value of the checked radio button
-            let selectedtree = $(this).val();
-
-            // Perform the desired action with the selected value
-            console.log("Selected value: " + selectedtree);
-
-            $.ajax({
-                type: 'POST',
-                data: { selectedtree: selectedtree },
-                url: '/treepreferences',
-                traditional: true,
-                success: function (data) {
-                    let prefdata = JSON.parse(data['pref_data']);
-                    console.log(prefdata);
-
-                    // Clear the existing table
-                    $('#treePreferencestables').empty();
-
-                    // Start building the table HTML
-                    let tableHTML = '<h5 class="table-title">Tree Preferences</h5>';
-                    tableHTML += '<table><thead><tr><th class="select-column"></th><th class="variable-column">Environmental Variable</th><th class="minimum-column">Minimum</th><th class="maximum-column">Maximum</th><th class="rank-column">Importance Rank</th></tr></thead><tbody>';
-
-                    // Populate the table with data
-                    for (let i = 0; i < prefdata.variable.length; i++) {
-                        tableHTML += '<tr>';
-                        tableHTML += '<td class="select-column"><input type="checkbox" name="prefvariable" data-min="' + prefdata.minimum[i] + '" data-max="' + prefdata.maximum[i] + '" value="' + prefdata.variable[i] + '"></td>';
-                        tableHTML += '<td class="variable-column">' + prefdata.variable[i] + '</td>';
-                        tableHTML += '<td class="minimum-column">' + prefdata.minimum[i] + '</td>';
-                        tableHTML += '<td class="maximum-column">' + prefdata.maximum[i] + '</td>';
-                        tableHTML += '<td class="rank-column">' + prefdata.rank[i] + '</td>';
-                        tableHTML += '</tr>';
-                    }
-
-                    tableHTML += '</tbody></table>';
-
-                    // Append the table HTML to the container
-                    $('#treePreferencestables').append(tableHTML);
-
-                    // Show the table container
-                    $('.pref-table-window').show();
-                },
-            });
-
+      tempDiv.querySelectorAll("label").forEach(label => {
+        const treeName = label.textContent.trim();
+        if (treeName && !allTrees.some(tree => tree.name === treeName)) {
+          allTrees.push({ name: treeName });
         }
-    });
+      });
 
+      tempDiv.querySelectorAll("input").forEach(input => {
+        const treeName = input.value || input.dataset.treeName;
+        if (treeName && !allTrees.some(tree => tree.name === treeName)) {
+          allTrees.push({ name: treeName });
+        }
+      });
 
-    $('#treePreferencestables').on('change', 'input[type="checkbox"]', function () {
+      tempDiv.querySelectorAll("button").forEach(button => {
+        const treeName = button.textContent.trim();
+        if (treeName && !allTrees.some(tree => tree.name === treeName)) {
+          allTrees.push({ name: treeName });
+        }
+      });
 
-        // Define the data object
-        pref_data = {
-            'variable': [],
-            'min': [],
-            'max': []
-        };
+      tempDiv.querySelectorAll("option").forEach(option => {
+        const treeName = option.textContent.trim();
+        if (treeName && !allTrees.some(tree => tree.name === treeName)) {
+          allTrees.push({ name: treeName });
+        }
+      });
 
-        $('#treePreferencestables input:checked').each(function () {
-            var checkbox = $(this);
-            var isChecked = checkbox.prop('checked');
-            var variableName = checkbox.val();
-            var min = parseInt(checkbox.data('min'));
-            var max = parseInt(checkbox.data('max'));
-
-            // Check if checkbox is checked or unchecked
-            if (isChecked) {
-                // Append data to the corresponding arrays
-                pref_data['variable'].push(variableName);
-                pref_data['min'].push(min);
-                pref_data['max'].push(max);
-            } else {
-                // Remove data from the corresponding arrays if unchecked
-                var index = pref_data['variable'].indexOf(variableName);
-                if (index !== -1) {
-                    pref_data['variable'].splice(index, 1);
-                    pref_data['min'].splice(index, 1);
-                    pref_data['max'].splice(index, 1);
-                }
-            }
-            console.log(pref_data)
-        });
-    });
-
-
-    function fetchfeasibilityData(prefdata) {
-        return new Promise(function (resolve, reject) {
-            $.ajax({
-                type: 'POST',
-                url: '/feasibiltycheck',
-                contentType: 'application/json',
-                data: JSON.stringify(prefdata),
-                success: function (data) {
-                    resolve(data)
-                },
-                error: function (error) {
-                    reject(error)
-                }
-            });
-        });
+      renderTreeList(allTrees);
+    },
+    error: function (error) {
+      console.error("Error loading tree species:", error);
+      document.getElementById("treeSpeciesList").innerHTML =
+        `<p class="small-text">Could not load tree species.</p>`;
     }
+  });
+}
 
-    // Define the color range and feasibility thresholds
-    var feasibilityColors = ["#004D40", "#01019B", "#FFA500", "#FF7D00", "#D81B60"];  // Pink to Dark Green
-    var thresholds = [0, 0.25, 0.5, 0.75, 1];  // Quantile thresholds
+function renderPreferenceTable(prefData) {
+  const tableBody = document.getElementById("treePreferenceTableBody");
+  tableBody.innerHTML = "";
 
-    // Function to get the color based on feasibility value
-    function getFeasibilityColor(feasibility) {
-        if (feasibility <= thresholds[0]) return feasibilityColors[0];
-        if (feasibility <= thresholds[1]) return feasibilityColors[1];
-        if (feasibility <= thresholds[2]) return feasibilityColors[2];
-        if (feasibility <= thresholds[3]) return feasibilityColors[3];
-        return feasibilityColors[4];
-    }
+  selectedPreferenceFactors = [];
+  updateSelectedFactorCount();
 
-    $("#createfeasibilitymap").click(function () {
+  if (!prefData.variable || prefData.variable.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" class="empty-row">
+          No preference factors found for this tree.
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
-        $("#loading-message").show()
+  const rows = prefData.variable.map((variable, index) => ({
+    variable: variable,
+    min: prefData.minimum[index],
+    max: prefData.maximum[index],
+    rank: prefData.rank[index]
+  }));
 
-        fetchfeasibilityData(pref_data)
-            .then(function (data) {
-                console.log('Data fetched successfully');
-                feasibilitydata = data.feasibility_data;
+  const rankOrder = { high: 1, medium: 2, low: 3 };
+  rows.sort((a, b) => {
+    const rankA = rankOrder[String(a.rank).toLowerCase()] || 4;
+    const rankB = rankOrder[String(b.rank).toLowerCase()] || 4;
+    return rankA - rankB;
+  });
 
-                // Clear current map content
-                $('#visElement').empty();
-                $(".pref-table-window").hide();
+  rows.forEach((row, index) => {
+    const tr = document.createElement("tr");
 
-                // Initialize a new map view
-                var feasibilitymap = new ol.Map({
-                    target: 'visElement',
-                    layers: [
-                        new ol.layer.Tile({
-                            source: new ol.source.OSM()
-                        })
-                    ],
-                    view: new ol.View({
-                        center: ol.proj.fromLonLat([-72.809594, 43.979433]), // Convert lon/lat to EPSG:3857
-                        zoom: 7,
-                        projection: 'EPSG:3857' // Use default projection for OpenLayers
-                    })
-                });
+    tr.innerHTML = `
+      <td><input type="checkbox" class="preference-checkbox" data-index="${index}" /></td>
+      <td>${row.variable}</td>
+      <td>${row.min}</td>
+      <td>${row.max}</td>
+      <td><span class="importance-badge ${getImportanceClass(row.rank)}">${row.rank}</span></td>
+    `;
 
-                // Create a vector source from from feasibility data
-                var vectorSource_feasibilitydata = new ol.source.Vector({
-                    features: new ol.format.GeoJSON().readFeatures(feasibilitydata, {
-                        dataProjection: 'EPSG:4326', // Assuming your data is in this projection
-                        featureProjection: 'EPSG:3857' // OpenLayers uses this for map display
-                    })
-                });
-
-                // Create a style function to dynamically color based on feasibility
-                var styleFunction = function (feature) {
-                    var feasibility = feature.get('feasibility');
-                    var color = getFeasibilityColor(feasibility);
-                    return new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: color
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 0.05
-                        })
-                    });
-                };
-
-                // Create the vector layer
-                var vectorLayer = new ol.layer.Vector({
-                    source: vectorSource_feasibilitydata,
-                    style: styleFunction
-                });
-
-                // Add the vector layer to the map
-                feasibilitymap.addLayer(vectorLayer);
-
-                // Tooltip display on hover
-                var overlay = new ol.Overlay({
-                    element: document.getElementById('popup'),  // Tooltip container
-                    positioning: 'top-right',
-                    stopEvent: false,
-                    offset: [0, -10]
-                });
-                feasibilitymap.addOverlay(overlay);
-
-                // Map hover event to display tooltip
-                feasibilitymap.on('pointermove', function (event) {
-                    var feature = map.forEachFeatureAtPixel(event.pixel, function (feature) {
-                        return feature;
-                    });
-                    if (feature) {
-                        var coordinate = event.coordinate;
-                        var feasibility = feature.get('feasibility');  // Replace with actual property
-                        var tooltipContent = `<strong>Feasibility: </strong> ${feasibility}`;
-                        $(overlay.getElement()).html(tooltipContent);
-                        overlay.setPosition(coordinate);
-                        $('#popup').show();
-                    } else {
-                        $('#popup').hide();
-                    }
-                });
-
-                // Add color legend manually in HTML
-                var legendHtml = `
-                <div class="map-legend" id="map-legend">
-                    <h4>Feasibility</h4>
-                    <div><span style="background-color:#D81B60;"></span> High</div>
-                    <div><span style="background-color:#FF7D00;"></span> Medium-High</div>
-                    <div><span style="background-color:#FFA500;"></span> Medium</div>
-                    <div><span style="background-color:#01019B;"></span> Low-Medium</div>
-                    <div><span style="background-color:#004D40;"></span> Low</div>
-                </div>`;
-                $('#visElement').append(legendHtml);
-            })
-            .catch(function (error) {
-                // Catch block to handle errors from any `.then()` in the chain
-                console.error('Error occurred:', error);
-            });
+    const checkbox = tr.querySelector(".preference-checkbox");
+    checkbox.addEventListener("change", function () {
+      if (this.checked) {
+        tr.classList.add("selected-row");
+        if (!selectedPreferenceFactors.some(item =>
+          item.variable === row.variable && item.min === row.min && item.max === row.max
+        )) {
+          selectedPreferenceFactors.push(row);
+        }
+      } else {
+        tr.classList.remove("selected-row");
+        selectedPreferenceFactors = selectedPreferenceFactors.filter(item =>
+          !(item.variable === row.variable && item.min === row.min && item.max === row.max)
+        );
+      }
+      updateSelectedFactorCount();
     });
+
+    tableBody.appendChild(tr);
+  });
+}
+
+function loadTreePreferences(selectedTree) {
+  selectedPreferenceFactors = [];
+  updateSelectedFactorCount();
+  document.getElementById("feasibilityStatus").textContent = "";
+
+  $.ajax({
+    url: "/treepreferences",
+    method: "POST",
+    data: { selectedtree: selectedTree },
+    success: function (response) {
+      const prefData = JSON.parse(response.pref_data);
+      renderPreferenceTable(prefData);
+    },
+    error: function (error) {
+      console.error("Error loading tree preferences:", error);
+      document.getElementById("treePreferenceTableBody").innerHTML = `
+        <tr>
+          <td colspan="5" class="empty-row">
+            Could not load preference factors.
+          </td>
+        </tr>
+      `;
+    }
+  });
+}
+
+function createFeasibilityMap() {
+  const statusText = document.getElementById("feasibilityStatus");
+
+  if (selectedPreferenceFactors.length === 0) {
+    statusText.textContent = "Please select at least one factor.";
+    alert("Please select at least one environmental factor.");
+    return;
+  }
+
+  const requestData = selectedPreferenceFactors.map(item => ({
+    variable: item.variable,
+    min: item.min,
+    max: item.max,
+    rank: item.rank
+  }));
+
+  statusText.textContent = "Creating feasibility map...";
+
+  $.ajax({
+    url: "/feasibiltycheck",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(requestData),
+    success: function (response) {
+      console.log("Feasibility response:", response);
+      statusText.textContent = "Feasibility data created successfully.";
+      alert("Feasibility map data was created successfully.");
+    },
+    error: function (error) {
+      console.error("Feasibility error:", error);
+      statusText.textContent = "Could not create feasibility map. Check Flask terminal.";
+      alert("Feasibility map failed. Check the Flask terminal.");
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadTreesWithPreferences();
+
+  document.getElementById("treeSearchInput").addEventListener("input", function () {
+    const searchText = this.value.toLowerCase();
+    const filteredTrees = allTrees.filter(tree =>
+      tree.name.toLowerCase().includes(searchText)
+    );
+    renderTreeList(filteredTrees);
+  });
+
+  document.getElementById("createFeasibilityMapBtn").addEventListener("click", createFeasibilityMap);
+
+  const howToUseBtn = document.getElementById("howToUseBtn");
+  const howToUseCard = document.getElementById("howToUseCard");
+
+  if (howToUseBtn && howToUseCard) {
+    howToUseBtn.addEventListener("click", function () {
+      howToUseCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      howToUseCard.classList.add("highlight-help");
+      setTimeout(function () {
+        howToUseCard.classList.remove("highlight-help");
+      }, 1200);
+    });
+  }
 });
-
