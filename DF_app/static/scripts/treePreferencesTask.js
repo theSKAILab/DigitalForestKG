@@ -1,5 +1,7 @@
 let selectedPreferenceFactors = [];
 let allTrees = [];
+let selectedTreeName = ""; 
+let feasibilityMap = null;   // holds the ol.Map instance
 
 function getImportanceClass(rank) {
   if (!rank) return "importance-low";
@@ -36,6 +38,7 @@ function renderTreeList(trees) {
         item.classList.remove("active");
       });
       this.classList.add("active");
+      selectedTreeName = tree.name;
       loadTreePreferences(tree.name);
     });
 
@@ -182,6 +185,120 @@ function loadTreePreferences(selectedTree) {
   });
 }
 
+function showMapView() {
+  document.getElementById("filtersView").style.display = "none";
+  document.getElementById("mapView").style.display = "flex";
+  const titleEl = document.getElementById("mapTitle");
+  if (titleEl) {
+    titleEl.textContent = selectedTreeName
+      ? "Feasibility map: " + selectedTreeName
+      : "Feasibility map";
+  }
+}
+
+function showFiltersView() {
+  if (feasibilityMap) {
+    feasibilityMap.setTarget(null);
+    feasibilityMap = null;
+  }
+  const visElement = document.getElementById("visElement");
+  // Remove everything except the spinner wrapper
+  Array.from(visElement.children).forEach(child => {
+    if (child.id !== "spinner-wrapper") child.remove();
+  });
+  document.getElementById("mapView").style.display = "none";
+  document.getElementById("filtersView").style.display = "flex";
+}
+
+function renderFeasibilityMap(response) {
+  const visElement = document.getElementById("visElement");
+  $("#spinner-wrapper").hide();
+  // Clear everything except the (now-hidden) spinner wrapper
+  Array.from(visElement.children).forEach(child => {
+    if (child.id !== "spinner-wrapper") child.remove();
+  });
+
+  let geojson;
+  try {
+    geojson = typeof response.feasibility_data === "string"
+      ? JSON.parse(response.feasibility_data)
+      : response.feasibility_data;
+  } catch (e) {
+    console.error("Could not parse feasibility_data:", e);
+    visElement.innerHTML = `<div style="padding:1rem;color:#b00;">Invalid feasibility data returned from server.</div>`;
+    return;
+  }
+
+  if (!geojson || !geojson.features || geojson.features.length === 0) {
+    visElement.innerHTML = `<div style="padding:1rem;">No regions matched the selected preferences.</div>`;
+    return;
+  }
+
+  const values = geojson.features
+    .map(f => parseFloat(f.properties.feasibility))
+    .filter(v => !isNaN(v));
+
+  const minValue = values.length ? Math.min(...values) : 0;
+  const maxValue = values.length ? Math.max(...values) : 1;
+
+  // Same palette your commented-out folium code uses
+  const colorScale = chroma
+    .scale(["red", "orange", "lightblue", "green", "darkgreen"])
+    .domain([minValue, maxValue]);
+
+  const styleFunction = function (feature) {
+    const f = parseFloat(feature.get("feasibility"));
+    if (isNaN(f)) {
+      return new ol.style.Style({
+        fill: new ol.style.Fill({ color: "rgba(200,200,200,0.3)" }),
+        stroke: new ol.style.Stroke({ color: "#333", width: 0.2 })
+      });
+    }
+    return new ol.style.Style({
+      fill: new ol.style.Fill({ color: colorScale(f).hex() }),
+      stroke: new ol.style.Stroke({ color: "#333", width: 0.2 })
+    });
+  };
+
+  const vectorSource = new ol.source.Vector({
+    features: new ol.format.GeoJSON().readFeatures(geojson, {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:3857"
+    })
+  });
+
+  const vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: styleFunction
+  });
+
+  feasibilityMap = new ol.Map({
+    target: "visElement",
+    layers: [
+      new ol.layer.Tile({ source: new ol.source.OSM() }),
+      vectorLayer
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([-69, 45]),  // Maine
+      zoom: 7,
+      projection: "EPSG:3857"
+    })
+  });
+
+  // Simple gradient legend
+  const legend = document.createElement("div");
+  legend.style.cssText = "position:absolute;bottom:1rem;left:1rem;background:rgba(255,255,255,0.92);padding:0.5rem 0.75rem;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.2);font-size:0.85rem;z-index:1000;";
+  legend.innerHTML = `
+    <div style="height:10px;width:200px;border:1px solid #333;background:linear-gradient(to right, ${colorScale(minValue).hex()}, ${colorScale((minValue+maxValue)/2).hex()}, ${colorScale(maxValue).hex()});"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;">
+      <span>${minValue.toFixed(2)}</span>
+      <span>Feasibility</span>
+      <span>${maxValue.toFixed(2)}</span>
+    </div>
+  `;
+  visElement.appendChild(legend);
+}
+
 function createFeasibilityMap() {
   const statusText = document.getElementById("feasibilityStatus");
 
@@ -199,6 +316,8 @@ function createFeasibilityMap() {
   }));
 
   statusText.textContent = "Creating feasibility map...";
+  showMapView();  // switch BEFORE the AJAX so the container has dimensions
+  $("#spinner-wrapper").show();
 
   $.ajax({
     url: "/feasibiltycheck",
@@ -208,17 +327,20 @@ function createFeasibilityMap() {
     success: function (response) {
       console.log("Feasibility response:", response);
       statusText.textContent = "Feasibility data created successfully.";
-      alert("Feasibility map data was created successfully.");
+      // Defer one tick so #mapView's display:flex is applied before OL measures
+      setTimeout(function () { renderFeasibilityMap(response); }, 0);
     },
     error: function (error) {
       console.error("Feasibility error:", error);
       statusText.textContent = "Could not create feasibility map. Check Flask terminal.";
-      alert("Feasibility map failed. Check the Flask terminal.");
+      document.getElementById("visElement").innerHTML =
+        `<div style="padding:1rem;color:#b00;">Could not create feasibility map. Check the Flask terminal for details.</div>`;
     }
   });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  $("#spinner-wrapper").hide();
   loadTreesWithPreferences();
 
   document.getElementById("treeSearchInput").addEventListener("input", function () {
@@ -230,6 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("createFeasibilityMapBtn").addEventListener("click", createFeasibilityMap);
+  document.getElementById("backToFiltersBtn").addEventListener("click", showFiltersView);  // NEW
 
   const howToUseBtn = document.getElementById("howToUseBtn");
   const howToUseCard = document.getElementById("howToUseCard");

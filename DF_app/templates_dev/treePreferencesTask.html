@@ -45,7 +45,7 @@
       </div>
     </aside>
 
-    <main class="table-panel">
+    <main class="table-panel" id="filtersView">
       <div class="table-scroll-area">
         <table class="filter-table">
           <thead>
@@ -57,7 +57,6 @@
               <th>Importance</th>
             </tr>
           </thead>
-
           <tbody id="treePreferenceTableBody">
             <tr>
               <td colspan="5" class="empty-row">
@@ -72,10 +71,19 @@
         <button id="createFeasibilityMapBtn" class="primary-btn" type="button">
           Create feasibility map
         </button>
-
         <span id="selectedFactorCount">0 factors selected</span>
         <span id="feasibilityStatus" class="status-text"></span>
         <span class="sort-label">Sort by: importance</span>
+      </div>
+    </main>
+
+    <main class="map-panel" id="mapView" style="display: none; flex-direction: column; flex: 1 1 auto; min-height: 0;">
+      <div class="map-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+        <button id="backToFiltersBtn" class="outline-btn" type="button">← Back to filters</button>
+        <span id="mapTitle" style="font-weight: 600;"></span>
+      </div>
+      <div id="visElement" style="position: relative; flex: 1 1 auto; min-height: 0; width: 100%;">
+        {% include "spinner.html" %}
       </div>
     </main>
 
