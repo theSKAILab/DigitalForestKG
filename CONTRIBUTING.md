@@ -54,10 +54,21 @@ Follow these steps to get your development environment running:
    ```bash
    export FLASK_APP=app.py
    export FLASK_ENV=development
+   export FLASK_TEMPLATES=templates
    flask run
+   ```
+   
+   **NOTE:** to access the WIP templates, change 
+   ```bash
+   export FLASK_TEMPLATES=templates
+   ```
+   to
+   ```bash
+   export FLASK_TEMPLATES=templates_dev
    ```
 
    *The app should now be visible at `http://127.0.0.1:5000`.*
+
 
 ------
 

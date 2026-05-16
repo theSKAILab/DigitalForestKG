@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="task-page d-flex flex-column h-100">
+
+  <div class="page-header flex-shrink-0">
+    <h2>Tree Inventory Filter Table</h2>
+
+    <div class="header-actions">
+      <select id="sel_year" class="search-input" aria-label="Start year">
+        <option value="Select">From year…</option>
+      </select>
+
+      <select id="sel_year2" class="search-input" aria-label="End year">
+        <option value="Select">To year…</option>
+      </select>
+
+      <select id="metricSelect" class="search-input">
+        <option value="presenceAbsence">Presence / Absence</option>
+        <option value="abundance">Abundance</option>
+      </select>
+
+      <button type="button" class="outline-btn" id="loadInventoryFiltersBtn">
+        Load Filters
+      </button>
+    </div>
+  </div>
+
+  <div class="inventory-layout flex-grow-1" style="display: flex; min-height: 0; gap: 1rem;">
+
+    <!-- ── LEFT PANEL: help + display toggles ── -->
+    <aside class="left-panel" style="flex: 0 0 18rem; overflow-y: auto;">
+      <h4>Tree Inventory</h4>
+      <p class="small-text">
+        Select a year range and a tree type, then choose inventory filters.
+      </p>
+
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" id="countyBordersSwitch">
+        <label class="form-check-label" for="countyBordersSwitch">Overlay county borders</label>
+        <p class="small-text">
+          Toggle display of county borders on the inventory map. Must be toggled before applying filters to take effect.
+      </p>
+      </div>
+
+      <div class="help-card">
+        <h4>How to use</h4>
+        <ol>
+          <li>Select start and end years.</li>
+          <li>Expand Angiosperms or Gymnosperms; drill down and click the bubble next to a taxon to select it.</li>
+          <li>Click <strong>Load Filters</strong>.</li>
+          <li>Tick filters you want, adjust ranges or options.</li>
+          <li>Click <strong>Apply inventory filters</strong>.</li>
+        </ol>
+      </div>
+    </aside>
+
+    <!-- ── MIDDLE PANEL: taxon drilldown ── -->
+    <section class="taxon-panel" style="flex: 0 0 24rem; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;">
+      <div class="taxon-scroll" style="flex: 1 1 auto; overflow-y: auto; padding: 1rem 1rem 0.5rem 1rem;">
+        <h5 class="text-uppercase text-body-secondary fw-bold mb-2">Tree family</h5>
+        <p class="small-text" id="taxonHelp">
+          Click a name to expand. Click the bubble to select that taxon.
+        </p>
+
+        <div id="tree-family">
+          <div class="taxon-row d-flex align-items-center gap-2 mb-1">
+            <span class="taxon-bubble" aria-hidden="true"></span>
+            <button class="taxbutton text-button-levelone taxon-toggle btn btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+                    type="button" cname="angiosperms" sname="Magnoliopsida"
+                    value="NCBITaxon_3398" id="angiosperms" data-level="clade">
+              <span class="taxon-label">Angiosperms</span>
+              <span class="taxon-chevron" aria-hidden="true">▸</span>
+            </button>
+          </div>
+          <div class="level-two-filter-box" id="angiospermfamilygroup"></div>
+
+          <div class="taxon-row d-flex align-items-center gap-2 mb-1 mt-2">
+            <span class="taxon-bubble" aria-hidden="true"></span>
+            <button class="taxbutton text-button-levelone taxon-toggle btn btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+                    type="button" cname="gymnosperms" sname="Acrogymnospermae"
+                    value="NCBITaxon_1437180" id="gymnosperms" data-level="clade">
+              <span class="taxon-label">Gymnosperms</span>
+              <span class="taxon-chevron" aria-hidden="true">▸</span>
+            </button>
+          </div>
+          <div class="level-two-filter-box" id="gymnospermfamilygroup"></div>
+        </div>
+      </div>
+
+      <div class="taxon-footer" style="flex: 0 0 auto; padding: 0.9rem 1rem; border-top: 1px solid #dee2e6; background: #f8f9fa;">
+        <div id="selectedTaxonDisplay" style="font-size: 0.9rem; color: #555;">
+          No taxon selected.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RIGHT PANEL: filter table OR map ── -->
+    <main class="table-panel" id="filtersView" style="flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;">
+
+      <table class="filter-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Inventory Filter</th>
+            <th>Min</th>
+            <th>Range / Options</th>
+            <th>Max</th>
+          </tr>
+        </thead>
+
+        <tbody id="inventoryFilterTableBody">
+          <tr>
+            <td colspan="5" class="empty-row">
+              Select years and a tree, then click Load Filters.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-footer">
+        <button id="applyInventoryFiltersBtn" class="primary-btn" type="button" disabled>
+          Apply inventory filters
+        </button>
+        <span id="selectedInventoryFilterCount">0 filters selected</span>
+        <span id="inventoryStatus" class="status-text"></span>
+      </div>
+
+    </main>
+
+    <main class="map-panel" id="mapView" style="display: none; flex-direction: column; flex: 1 1 auto; min-height: 0;">
+      <div class="map-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+        <button id="backToInventoryFiltersBtn" class="outline-btn" type="button">← Back to filters</button>
+        <span id="inventoryMapTitle" style="font-weight: 600;"></span>
+      </div>
+      <div id="visElement" style="position: relative; flex: 1 1 auto; min-height: 0; width: 100%;">
+        {% include "spinner.html" %}
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/scripts/treeInventoryTask.js"></script>
+
+{% endblock %}

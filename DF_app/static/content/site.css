@@ -4,6 +4,135 @@ body {
     min-height: 100vh;
 }
 
+/* --- Digital Forest palette (Bootstrap-aligned) --- */
+:root {
+    --df-main: #0F5232;
+    --df-navbar: #1A1A1A;
+    --df-secondary: #E8E8E8;
+    --df-select: #EAF3DE;
+    --df-white: #FFFFFF;
+
+    /* Bootstrap 5 tokens used by many components */
+    --bs-primary: var(--df-main);
+    --bs-primary-rgb: 15, 82, 50;
+}
+
+/* Navbar color override while keeping Bootstrap structure */
+.navbar.bg-dark,
+.navbar.navbar-dark.bg-dark {
+    background-color: var(--df-navbar) !important;
+}
+
+/* Links used in custom pages */
+.df-link {
+    color: var(--df-main);
+    text-decoration: none;
+}
+.df-link:hover,
+.df-link:focus {
+    color: var(--df-main);
+    text-decoration: underline;
+}
+
+/* Help page */
+.df-help-page {
+    background: #ffffff;
+    min-height: calc(100vh - 56px);
+}
+
+.df-help-sidebar {
+    background: var(--df-select);
+    border: 1px solid rgba(15, 82, 50, 0.18);
+}
+
+.df-help-topics {
+    gap: .5rem;
+}
+
+.df-help-topic {
+    text-align: left;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: .75rem;
+    padding: .75rem .75rem;
+    color: #111;
+}
+
+.df-help-topic:hover {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.df-help-topic.active,
+.df-help-topic[aria-selected="true"] {
+    background: var(--df-white);
+    border-color: rgba(15, 82, 50, 0.28);
+    box-shadow: 0 0 0 2px rgba(15, 82, 50, 0.12);
+}
+
+.df-help-tabs {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    gap: .5rem;
+}
+
+.df-help-tabs .nav-link {
+    color: #111;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-bottom: 0;
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    padding: .5rem .9rem;
+    background: #f3f4f6;
+}
+
+.df-help-tabs .nav-link.active {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.18);
+    color: #111;
+    position: relative;
+}
+
+.df-help-tabs .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: .75rem;
+    right: .75rem;
+    bottom: .35rem;
+    height: 2px;
+    background: var(--df-main);
+}
+
+.df-help-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--df-select);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--df-main);
+    box-shadow: 0 0 0 1px rgba(15, 82, 50, 0.14) inset;
+    flex: 0 0 auto;
+}
+
+.df-help-card.card {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: .9rem;
+    box-shadow: none;
+}
+
+.df-help-card .card-body {
+    border-radius: .9rem;
+}
+
+.df-example {
+    background: #f5f6f7;
+    border-left: 4px solid var(--df-main);
+}
+.df-example-title {
+    color: var(--df-main);
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 10px;
@@ -448,14 +577,20 @@ main {
     z-index: 0;
 }
 
-.map-legend {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+#map-legend {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1500;
+
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    max-width: 18rem;
+    pointer-events: auto;
 }
 
     .map-legend div {
@@ -745,4 +880,405 @@ main {
 .choropleth-legend-labels {
     display: flex;
     justify-content: space-between;
+}
+
+/* Bubble — now a clickable button-like element */
+.taxon-bubble {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid #ced4da;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.taxon-bubble:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+    transform: scale(1.1);
+}
+
+.taxon-bubble:active {
+    transform: scale(0.95);
+}
+
+/* Filled bubble for the currently selected taxon */
+.taxon-row.selected .taxon-bubble {
+    background-color: #198754;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.25);
+}
+
+/* Drop the row-level highlight — only the bubble indicates selection now */
+/* (Remove or comment out the old rule:)
+.taxon-row.selected .taxbutton {
+    background-color: #d1e7dd;
+    border-color: #198754;
+    color: #0a3622;
+    font-weight: 500;
+}
+*/
+
+/* Chevron rotation when expanded — unchanged */
+.taxon-chevron {
+    display: inline-block;
+    transition: transform 0.15s ease;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+.taxon-toggle.expanded .taxon-chevron {
+    transform: rotate(90deg);
+}
+
+.bg-footer-green {
+    background-color: #0f5232;
+}
+
+.bg-app-green-secondary {
+    background-color: #f4f7f2;
+}
+
+.bg-app-green-badge {
+    background-color: #d4eac8;
+}
+
+.text-app-green { 
+    color: #0f5232;
+}
+
+.spinner-wrapper {
+    position: absolute;
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color: rgba(128, 128, 128, 0.3);
+}
+
+.spinner-wrapper .custom-spinner {
+    position: static;
+}
+
+/* Tree Environment Preferences */
+/* Shared input/control border style */
+.search-input,
+.range-input,
+.status-select {
+  border: 1px solid #d5d5d5;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.search-input {
+  min-width: 12rem;
+}
+
+.status-select {
+  min-width: 14rem;
+}
+
+.range-input {
+  width: 6rem;
+}
+
+/* Shared button base */
+.outline-btn,
+.primary-btn {
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.875rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.outline-btn {
+  border: 1px solid #0b6b3a;
+  color: #0b6b3a;
+  background: #f7fff7;
+  text-decoration: none;
+}
+
+.outline-btn:hover {
+  background: #e9f4df;
+}
+
+.primary-btn {
+  background-color: #0b5d35;
+  color: white;
+  border: none;
+  font-weight: 700;
+}
+
+.primary-btn:hover {
+  background-color: #084829;
+}
+
+.task-page {
+  padding: 1.5rem;
+  background: #f7f7f7;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #263238;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.inventory-layout {
+  display: grid;
+  grid-template-columns: 17.5rem 1fr;
+  background: #ffffff;
+  min-height: 40rem;
+}
+
+.left-panel {
+  border-right: 1px solid #e5e5e5;
+  padding: 1.125rem;
+  overflow-y: auto;
+  min-height: 0;  
+}
+
+.left-panel h4 {
+  margin: 0 0 0.25rem 0;
+  color: #263238;
+}
+
+.small-text {
+  font-size: 0.75rem;
+  color: #6f7a82;
+  margin-top: 0;
+}
+
+.help-card {
+  background: #e9f4df;
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+  margin-top: 1.25rem;
+}
+
+.help-card h4 {
+  margin-bottom: 0.5rem;
+}
+
+.help-card ol {
+  padding-left: 1.125rem;
+  margin-bottom: 0;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.table-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.table-scroll-area {
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0;
+}
+
+
+.filter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.filter-table th {
+  text-align: left;
+  padding: 0.875rem 1.125rem;
+  font-weight: 700;
+  color: #0f1f2e;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.filter-table td {
+  padding: 0.75rem 1.125rem;
+  border-bottom: 1px solid #f0f0f0;
+  color: #1f2d3d;
+}
+
+.filter-table tr.selected-row {
+  background-color: #eaf4df;
+}
+
+.filter-table thead th {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.empty-row {
+  text-align: center;
+  color: #7b8790;
+  padding: 2rem;
+}
+
+.inventory-checkbox {
+  cursor: pointer;
+}
+
+.table-footer {
+  flex-shrink: 0;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.125rem;
+  border-top: 1px solid #eeeeee;
+}
+
+.status-text {
+  font-size: 0.8125rem;
+  color: #0b5d35;
+}
+
+.type-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background-color: #d9eadf;
+  color: #2d6a4f;
+}
+
+/* ── Tree Preference Filter Table ── */
+
+.tree-preference-layout {
+  display: grid;
+  grid-template-columns: 17.5rem 1fr;
+  background: #ffffff;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tree-list {
+  max-height: 22.5rem;
+  overflow-y: auto;
+  border: 1px solid #eeeeee;
+  margin-top: 0.75rem;
+}
+
+.tree-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #eeeeee;
+  padding: 0.625rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #263238;
+}
+
+.tree-option:hover {
+  background: #eef7e7;
+}
+
+.tree-option.active {
+  background: #e6f2d9;
+  font-weight: 600;
+}
+
+.highlight-help {
+  outline: 3px solid #0b5d35;
+  transition: outline 0.2s ease;
+}
+
+.sort-label {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: #0b5d35;
+}
+
+.importance-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.importance-high {
+  background-color: #f8d7da;
+  color: #8a1f2d;
+}
+
+.importance-medium {
+  background-color: #fff2cc;
+  color: #8a6d1f;
+}
+
+.importance-low {
+  background-color: #d9eadf;
+  color: #2d6a4f;
+}
+
+.preference-checkbox {
+  cursor: pointer;
+}
+
+.card-about {
+    color: #0f5232;
+    border-color: #0f5232;
+    background-color: #d4eac8;
+}
+
+.table-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.panel-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#mapView .map-content {
+  width: 100%;
+  height: 100%;
+}
+
+#mapView .map-content img,
+#mapView .map-content svg {
+  max-width: 100%;
+  height: auto;
+}
+
+#visElement #spinner-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 500;
 }

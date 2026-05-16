@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="task-page d-flex flex-column h-100">
+
+  <div class="page-header flex-shrink-0">
+    <h2>Tree Environment Preferences</h2>
+
+    <div class="header-actions">
+      <input
+        id="treeSearchInput"
+        class="search-input"
+        type="text"
+        placeholder="Search tree species..."
+      />
+
+      <a class="outline-btn" href="{{ url_for('sparql_query') }}">
+        Switch To SPARQL Query
+      </a>
+
+      <button type="button" class="outline-btn" id="howToUseBtn">
+        ? How to use
+      </button>
+    </div>
+  </div>
+
+  <div class="tree-preference-layout flex-grow-1">
+
+    <aside class="left-panel">
+      <h4>Tree Species</h4>
+      <p class="small-text">Select a species to view its environmental preferences.</p>
+
+      <div id="treeSpeciesList" class="tree-list">
+        <p class="small-text">Loading tree species...</p>
+      </div>
+
+      <div class="help-card" id="howToUseCard">
+        <h4>How to use</h4>
+        <ol>
+          <li>Select a tree species.</li>
+          <li>Review its preference factors.</li>
+          <li>Select the factors you want to include.</li>
+          <li>Create a feasibility map.</li>
+        </ol>
+      </div>
+    </aside>
+
+    <main class="table-panel" id="filtersView">
+      <div class="table-scroll-area">
+        <table class="filter-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Environmental Factor</th>
+              <th>Min</th>
+              <th>Max</th>
+              <th>Importance</th>
+            </tr>
+          </thead>
+          <tbody id="treePreferenceTableBody">
+            <tr>
+              <td colspan="5" class="empty-row">
+                Select a tree species to see preference factors.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <button id="createFeasibilityMapBtn" class="primary-btn" type="button">
+          Create feasibility map
+        </button>
+        <span id="selectedFactorCount">0 factors selected</span>
+        <span id="feasibilityStatus" class="status-text"></span>
+        <span class="sort-label">Sort by: importance</span>
+      </div>
+    </main>
+
+    <main class="map-panel" id="mapView" style="display: none; flex-direction: column; flex: 1 1 auto; min-height: 0;">
+      <div class="map-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+        <button id="backToFiltersBtn" class="outline-btn" type="button">← Back to filters</button>
+        <span id="mapTitle" style="font-weight: 600;"></span>
+      </div>
+      <div id="visElement" style="position: relative; flex: 1 1 auto; min-height: 0; width: 100%;">
+        {% include "spinner.html" %}
+      </div>
+    </main>
+
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/static/scripts/treePreferencesTask.js"></script>
+{% endblock %}

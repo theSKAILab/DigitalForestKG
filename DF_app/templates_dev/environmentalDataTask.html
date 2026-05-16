@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="task-page d-flex flex-column h-100">
+
+  <div class="page-header flex-shrink-0">
+    <h2>Environmental Data Filter</h2>
+
+    <div class="header-actions">
+      <span id="environmentalRegionSummary" class="status-text">No region selected.</span>
+      <button type="button" class="outline-btn" id="resetEnvSelectionBtn">Reset selection</button>
+    </div>
+  </div>
+
+  <div class="inventory-layout flex-grow-1" style="display: flex; min-height: 0; gap: 1rem;">
+
+    <!-- ── LEFT PANEL ── -->
+    <aside class="left-panel" style="flex: 0 0 18rem; overflow-y: auto; padding: 1rem 1.25rem;">
+      <h4>Environmental Data</h4>
+      <p class="small-text">
+        Select a region (counties or a drawn polygon), then choose environmental factors to filter by.
+      </p>
+
+      <div class="help-card">
+        <h4>How to use</h4>
+        <ol>
+          <li>Pick a spatial method: counties or draw-on-map.</li>
+          <li>Confirm your selection.</li>
+          <li>Expand factor categories and tick the ones you want.</li>
+          <li>Adjust slider ranges or pick category values.</li>
+          <li>Click <strong>Apply filters</strong> to generate the map.</li>
+        </ol>
+      </div>
+    </aside>
+
+    <!-- ── MIDDLE PANEL: spatial selection ── -->
+    <section class="taxon-panel" style="flex: 0 0 24rem; display: flex; flex-direction: column; min-height: 0; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6; font-size: 1rem;">
+
+      <div style="flex: 1 1 auto; overflow-y: auto; padding: 1rem 1rem 0.5rem 1rem;">
+        <h5 class="text-uppercase text-body-secondary fw-bold mb-2">Spatial selection</h5>
+        <p class="small-text">Choose how to define your region.</p>
+
+        <div class="form-check mb-1">
+          <input class="form-check-input" type="radio" name="spatialfilterradio" id="adminboundaries">
+          <label class="form-check-label" for="adminboundaries">Administrative boundaries</label>
+        </div>
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="radio" name="spatialfilterradio" id="drawonmap">
+          <label class="form-check-label" for="drawonmap">Draw on map</label>
+        </div>
+
+        <!-- County checklist (appears when admin boundaries is picked) -->
+        <div id="countyChecklistSection" style="display: none;">
+          <hr>
+          <h6 class="fw-bold mb-2">Counties</h6>
+          <div id="countyChecklist" style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <!-- counties injected here -->
+          </div>
+          <div class="d-grid mt-3">
+            <button class="btn btn-outline-primary btn-sm" type="button" id="applyspatialfilters" disabled>
+              Confirm counties
+            </button>
+          </div>
+        </div>
+
+        <!-- Draw-on-map instructions (appears when draw is picked) -->
+        <div id="drawSection" style="display: none;">
+          <hr>
+          <p class="small-text">Click <strong>Enter draw mode</strong> to draw a polygon on the map.
+             When you finish closing the polygon, the region will be saved.</p>
+          <div class="d-grid">
+            <button class="btn btn-outline-primary btn-sm" type="button" id="enterDrawModeBtn">
+              Enter draw mode
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex: 0 0 auto; padding: 0.9rem 1rem; border-top: 1px solid #dee2e6; background: #f8f9fa;">
+        <div id="spatialSelectionDisplay" style="font-size: 0.9rem; color: #555;">
+          No region selected.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RIGHT PANEL: filter table ── -->
+    <main class="table-panel" id="filtersView" style="flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;">
+
+      <div class="table-scroll-area" style="flex: 1 1 auto; overflow-y: auto;">
+        <table class="filter-table" id="envFilterTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Environmental Factor</th>
+              <th>Min</th>
+              <th>Range / Options</th>
+              <th>Max</th>
+            </tr>
+          </thead>
+          <tbody id="envFilterTableBody">
+            <tr>
+              <td colspan="5" class="empty-row">
+                Select a region first, then expand a category below.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <button id="submituserinput" class="primary-btn" type="button" disabled>
+          Apply filters
+        </button>
+        <span id="selectedEnvFilterCount">0 filters selected</span>
+        <span id="environmentalStatus" class="status-text"></span>
+      </div>
+
+    </main>
+
+    <!-- ── RIGHT PANEL: map view (swap-in) ── -->
+    <main class="map-panel" id="mapView" style="display: none; flex-direction: column; flex: 1 1 auto; min-height: 0;">
+      <div class="map-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+        <button id="backToEnvFiltersBtn" class="outline-btn" type="button">← Back to filters</button>
+        <span id="envMapTitle" style="font-weight: 600;"></span>
+      </div>
+      <div id="visElement" style="position: relative; flex: 1 1 auto; min-height: 0; width: 100%;">
+        {% include "spinner.html" %}
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+<script src="/static/scripts/environmentalDataTask.js"></script>
+
+{% endblock %}
