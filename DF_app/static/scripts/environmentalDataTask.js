@@ -337,6 +337,7 @@ jQuery(document).ready(function () {
                 url: '/minmax',
                 traditional: true,
                 success: function (data) {
+		    console.log(data) // DEBUG
                     var min = Number(data.datamin);
                     var max = Number(data.datamax)
                     sliderDiv.noUiSlider.updateOptions({

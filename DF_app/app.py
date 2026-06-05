@@ -84,10 +84,11 @@ def construct_minmax_query_selreg(region, quality):
         s2celltype = "S2Cell_level13"
 
     query = f"""
-    SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+    SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) as ?unit)
     WHERE {{VALUES ?county {{ {region_values} }}
             ?amt a dfds:{quality};
-                stad:hasQuantitativeValue [qudt:numericValue ?val].
+                stad:hasQuantitativeValue [qudt:numericValue ?val];
+                stad:hasQuantitativeValue [qudt:unit ?unit].
             ?amt stad:hasSpatialCoverage ?region.
             ?region rdf:type dfds:{s2celltype};
                 fio:locatedIn [rdfs:label ?county].
@@ -100,10 +101,11 @@ def construct_minmax_query_wkt(wkt_geom, quality):
 
     wkt_text = f"'''<http://www.opengis.net/def/crs/EPSG/8.5/4326>{wkt_geom}'''^^<http://www.opengis.net/ont/geosparql#wktLiteral>"
     query = f"""
-        SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+        SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) as ?unit)
         WHERE {{
             ?amt a dfds:{quality};
-                stad:hasQuantitativeValue [qudt:numericValue ?val].
+                stad:hasQuantitativeValue [qudt:numericValue ?val];
+                stad:hasQuantitativeValue [qudt:unit ?unit].
             ?amt stad:hasSpatialCoverage ?region.
             ?region rdf:type dfds:S2Cell_level13;
                 geo:hasGeometry [geo:asWKT ?geom].
@@ -242,10 +244,11 @@ def minmax():
         else:
             s2celltype = "S2Cell_level13"
 
-        select_query = f"""SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+        select_query = f"""SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) as ?unit) 
         WHERE {{VALUES ?county {{ {region_values} }}
             ?amt a dfds:{quality};
-                stad:hasQuantitativeValue [qudt:numericValue ?val].
+                stad:hasQuantitativeValue [qudt:numericValue ?val];
+                stad:hasQuantitativeValue [qudt:unit ?unit].
             ?amt stad:hasSpatialCoverage ?region.
             ?region rdf:type dfds:{s2celltype};
                 fio:locatedIn [rdfs:label ?county].
@@ -258,10 +261,11 @@ def minmax():
         )
 
         select_query = f"""
-        SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+        SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) as ?unit)
         WHERE {{
             ?amt a dfds:{quality};
-                stad:hasQuantitativeValue [qudt:numericValue ?val].
+                stad:hasQuantitativeValue [qudt:numericValue ?val];
+                stad:hasQuantitativeValue [qudt:unit ?unit].
             ?amt stad:hasSpatialCoverage ?region.
             ?region rdf:type dfds:S2Cell_level13;
                 geo:hasGeometry [geo:asWKT ?geom].
@@ -269,15 +273,16 @@ def minmax():
         }}"""
 
     minmax_querystring = name_space + "\n" + select_query
-
+    print(minmax_querystring)
     sparql_endpoint.setQuery(minmax_querystring)
     sparql_endpoint.setReturnFormat(JSON)
     minmaxresults = sparql_endpoint.query().convert()
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
+        unit = result["unit"]["value"]
 
-    return jsonify({"datamin": datamin, "datamax": datamax})
+    return jsonify({'datamin':datamin, 'datamax':datamax, 'unit':unit})
 
 
 @app.route("/categorygroup", methods=["GET", "POST"])
@@ -454,7 +459,6 @@ def all_areas():
     """
     Fetch all counties from GeoJSON file and assign colors
     """
-    import json
 
     # Load the counties GeoJSON file
     geojson_path = "static/Counties_ME.geojson"
@@ -540,6 +544,20 @@ def userpara():
     userparadata["meanslope"] = request.form.getlist("meansloperange")
     userparadata["aws150"] = request.form.getlist("aws150range")
 
+    name_space = """PREFIX stad: <http://purl.org/spatialai/stad/v2/core/> 
+    PREFIX qudt: <http://qudt.org/schema/qudt/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX time: <http://www.w3.org/2006/time#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX dfds: <http://spatialai.org/digitalforest/datasets/core/>  
+    PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+    PREFIX fio: <http://purl.org/spatialai/fio/v1/core/>"""
+
+    end_query = "}"
+
     if county:
         county_values = '"' + '""'.join(map(str, county)) + '"'
 
@@ -572,6 +590,8 @@ def userpara():
        FILTER (geof:sfIntersects(?geom, %s)).""" % (
             wkt_text
         )
+
+    filtered_region_queryString = name_space + "\n" + begin_query
 
     processeddata = {}
     for key, value in userparadata.items():
@@ -1443,28 +1463,30 @@ def minmaxtree():
 
     end_query = "}"
 
-    select_query = f"""SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+    select_query = f"""SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) AS ?unit)
     WHERE {{ 
         ?tree a [ oboInOwl:hasExactSynonym ?cname ] .
         ?snapshot fio:snapshotOf ?tree ;
                   fio:snapshotDate ?year ;
         		fio:includeRecord ?record.
             ?record stad:hasQualityKind dfds:{quality};
-            		stad:hasQuantitativeValue[qudt:numericValue ?val].
+            		stad:hasQuantitativeValue[qudt:numericValue ?val];
+            		stad:hasQuantitativeValue[qudt:unit ?unit].
         FILTER (?cname = "{cname}" && ?year = "{year}"^^xsd:gYear)
         FILTER(ISNUMERIC(?val)&& ?val != "NaN"^^xsd:float)
     }}"""
 
     minmax_querystring = name_space + "\n" + select_query
-
+    print(minmax_querystring)
     sparql_endpoint.setQuery(minmax_querystring)
     sparql_endpoint.setReturnFormat(JSON)
     minmaxresults = sparql_endpoint.query().convert()
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
+        unit = result["unit"]["value"]
 
-    return jsonify({"datamin": datamin, "datamax": datamax})
+    return jsonify({'datamin':datamin, 'datamax':datamax, 'unit':unit})
 
 
 @app.route("/categorygrouptree", methods=["GET", "POST"])
@@ -1539,10 +1561,11 @@ def minmaxtreeenv():
         PREFIX geof: <http://www.opengis.net/def/function/geosparql/>"""
 
     select_query = f"""
-    SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin)
+    SELECT (MAX(?val) AS ?datamax) (MIN(?val) AS ?datamin) (SAMPLE(?unit) AS ?unit)
     WHERE {{
         ?amt a dfds:{quality};
-            stad:hasQuantitativeValue [qudt:numericValue ?val].
+            stad:hasQuantitativeValue [qudt:numericValue ?val];
+            stad:hasQuantitativeValue [qudt:unit ?unit].
         ?amt stad:hasSpatialCoverage ?region.
         ?region rdf:type dfds:S2Cell_level13.
         }}"""
@@ -1555,8 +1578,9 @@ def minmaxtreeenv():
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
+        unit = result["unit"]["value"]
 
-    return jsonify({"datamin": datamin, "datamax": datamax})
+    return jsonify({'datamin':datamin, 'datamax':datamax, 'unit':unit})
 
 
 @app.route("/categorygrouptreeenv", methods=["GET", "POST"])
@@ -1656,8 +1680,8 @@ def treepreferences():
     PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     PREFIX stad: <http://purl.org/spatialai/stad/v2/core/>
     
-    select distinct ?qualitykind ?minimumpreference ?maximumpreference ?rank
-    where { 
+    SELECT DISTINCT ?qualitykind ?minimumpreference ?maximumpreference ?unit ?rank
+    WHERE { 
         ?spec rdfs:subClassOf [owl:onProperty epo:hasEnvironmentalPreferenceSet; owl:hasValue ?envprefset].
         ?spec oboInOwl:hasExactSynonym ?tree.
         ?envprefset epo:containsPreference ?envpref.
@@ -1665,29 +1689,30 @@ def treepreferences():
     ?envpref epo:hasPreferenceDescription ?range;
              epo:hasPredictorImportance ?predimp.
         ?range epo:minimumPreference [qudt:numericValue ?minimumpreference];
-               epo:maximumPreference [qudt:numericValue ?maximumpreference].
+               epo:maximumPreference [qudt:numericValue ?maximumpreference];
+               epo:maximumPreference [qudt:unit ?unit].
         ?predimp epo:hasImportanceRank [rdfs:label ?rank].
         
-        filter(?tree = "%s")} """
-        % selectedtree
-    )
-
+        FILTER(?tree = "%s")} """ % selectedtree
+    
     sparql_endpoint.setQuery(treepref_querystring)
 
     sparql_endpoint.setReturnFormat(JSON)
     treeprefresults = sparql_endpoint.query().convert()
 
     treepref_dict = {}
-    treepref_dict["variable"] = []
-    treepref_dict["minimum"] = []
-    treepref_dict["maximum"] = []
-    treepref_dict["rank"] = []
-
+    treepref_dict['variable'] = []
+    treepref_dict['minimum'] = []
+    treepref_dict['maximum'] = []
+    treepref_dict['unit'] = []
+    treepref_dict['rank'] = []
+    
     for result in treeprefresults["results"]["bindings"]:
-        treepref_dict["variable"].append(result["qualitykind"]["value"])
-        treepref_dict["minimum"].append(result["minimumpreference"]["value"])
-        treepref_dict["maximum"].append(result["maximumpreference"]["value"])
-        treepref_dict["rank"].append(result["rank"]["value"])
+       treepref_dict['variable'].append(result["qualitykind"]["value"])
+       treepref_dict['minimum'].append(result["minimumpreference"]["value"])
+       treepref_dict['maximum'].append(result["maximumpreference"]["value"])
+       treepref_dict['unit'].append(result["unit"]["value"])
+       treepref_dict['rank'].append(result["rank"]["value"])
 
     pref_data = json.dumps(treepref_dict)
 
@@ -1717,8 +1742,8 @@ def feasibiltycheck():
     PREFIX dfds: <http://spatialai.org/digitalforest/datasets/core/> 
     PREFIX geof: <http://www.opengis.net/def/function/geosparql/>"""
 
-    begin_query = """select*
-        where{
+    begin_query = """SELECT *
+        WHERE {
         ?region rdf:type dfds:S2Cell_level13;
             dfds:cellID ?cellID;
             geo:hasGeometry [geo:asWKT ?geom]."""
@@ -1733,10 +1758,8 @@ def feasibiltycheck():
     for index, row in tolerance_range_table.iterrows():
         select_query = """ [] stad:hasQualityKind [rdfs:label "%s"];
                                stad:hasQuantitativeValue [qudt:numericValue ?%s];
-                               stad:hasSpatialCoverage ?region.""" % (
-            row["variable"],
-            row["prop"],
-        )
+                               stad:hasQuantitativeValue [qudt:unit ?unit];
+                               stad:hasSpatialCoverage ?region. """ %(row['variable'], row['prop'])
 
         query_string = query_string + "\n" + select_query
 
