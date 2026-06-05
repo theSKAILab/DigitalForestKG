@@ -4,6 +4,135 @@ body {
     min-height: 100vh;
 }
 
+/* --- Digital Forest palette (Bootstrap-aligned) --- */
+:root {
+    --df-main: #0F5232;
+    --df-navbar: #1A1A1A;
+    --df-secondary: #E8E8E8;
+    --df-select: #EAF3DE;
+    --df-white: #FFFFFF;
+
+    /* Bootstrap 5 tokens used by many components */
+    --bs-primary: var(--df-main);
+    --bs-primary-rgb: 15, 82, 50;
+}
+
+/* Navbar color override while keeping Bootstrap structure */
+.navbar.bg-dark,
+.navbar.navbar-dark.bg-dark {
+    background-color: var(--df-navbar) !important;
+}
+
+/* Links used in custom pages */
+.df-link {
+    color: var(--df-main);
+    text-decoration: none;
+}
+.df-link:hover,
+.df-link:focus {
+    color: var(--df-main);
+    text-decoration: underline;
+}
+
+/* Help page */
+.df-help-page {
+    background: #ffffff;
+    min-height: calc(100vh - 56px);
+}
+
+.df-help-sidebar {
+    background: var(--df-select);
+    border: 1px solid rgba(15, 82, 50, 0.18);
+}
+
+.df-help-topics {
+    gap: .5rem;
+}
+
+.df-help-topic {
+    text-align: left;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: .75rem;
+    padding: .75rem .75rem;
+    color: #111;
+}
+
+.df-help-topic:hover {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.df-help-topic.active,
+.df-help-topic[aria-selected="true"] {
+    background: var(--df-white);
+    border-color: rgba(15, 82, 50, 0.28);
+    box-shadow: 0 0 0 2px rgba(15, 82, 50, 0.12);
+}
+
+.df-help-tabs {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    gap: .5rem;
+}
+
+.df-help-tabs .nav-link {
+    color: #111;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-bottom: 0;
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    padding: .5rem .9rem;
+    background: #f3f4f6;
+}
+
+.df-help-tabs .nav-link.active {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.18);
+    color: #111;
+    position: relative;
+}
+
+.df-help-tabs .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: .75rem;
+    right: .75rem;
+    bottom: .35rem;
+    height: 2px;
+    background: var(--df-main);
+}
+
+.df-help-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--df-select);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--df-main);
+    box-shadow: 0 0 0 1px rgba(15, 82, 50, 0.14) inset;
+    flex: 0 0 auto;
+}
+
+.df-help-card.card {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: .9rem;
+    box-shadow: none;
+}
+
+.df-help-card .card-body {
+    border-radius: .9rem;
+}
+
+.df-example {
+    background: #f5f6f7;
+    border-left: 4px solid var(--df-main);
+}
+.df-example-title {
+    color: var(--df-main);
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 10px;
@@ -448,14 +577,20 @@ main {
     z-index: 0;
 }
 
-.map-legend {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+#map-legend {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1500;
+
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    max-width: 18rem;
+    pointer-events: auto;
 }
 
     .map-legend div {
@@ -745,4 +880,72 @@ main {
 .choropleth-legend-labels {
     display: flex;
     justify-content: space-between;
+}
+
+/* Bubble — now a clickable button-like element */
+.taxon-bubble {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid #ced4da;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.taxon-bubble:hover {
+    border-color: #198754;
+    background-color: rgba(25, 135, 84, 0.1);
+    transform: scale(1.1);
+}
+
+.taxon-bubble:active {
+    transform: scale(0.95);
+}
+
+/* Filled bubble for the currently selected taxon */
+.taxon-row.selected .taxon-bubble {
+    background-color: #198754;
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.25);
+}
+
+/* Drop the row-level highlight — only the bubble indicates selection now */
+/* (Remove or comment out the old rule:)
+.taxon-row.selected .taxbutton {
+    background-color: #d1e7dd;
+    border-color: #198754;
+    color: #0a3622;
+    font-weight: 500;
+}
+*/
+
+/* Chevron rotation when expanded — unchanged */
+.taxon-chevron {
+    display: inline-block;
+    transition: transform 0.15s ease;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+.taxon-toggle.expanded .taxon-chevron {
+    transform: rotate(90deg);
+}
+
+.bg-footer-green {
+    background-color: #0f5232;
+}
+
+.bg-app-green-secondary {
+    background-color: #f4f7f2;
+}
+
+.bg-app-green-badge {
+    background-color: #d4eac8;
+}
+
+.text-app-green { 
+    color: #0f5232;
 }

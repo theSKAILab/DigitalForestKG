@@ -1,0 +1,29 @@
+<!-- Task Dropdown Macro 
+     For each query type - have a dropdown menu
+     Query types defined in app.py inject_tasks()
+-->
+     
+{% macro task_dropdown(tasks, button_label='Run App', button_class='btn-outline-success') %}
+    {% set task_endpoints = tasks | map(attribute='endpoint') | list %}
+    <div class="dropdown ms-2">
+        <button class="btn {{ button_class }} dropdown-toggle {{ 'active' if request.endpoint in task_endpoints }}"
+                type="button"
+                id="taskDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            {{ button_label }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="taskDropdown">
+            {% for task in tasks %}
+                <li>
+                    <a class="dropdown-item {{ 'active' if request.endpoint == task.endpoint }}"
+                       href="{{ url_for(task.endpoint) }}"
+                       title="{{ task.title }}">
+                        <img src="{{ task.icon }}" alt="" width="24" height="24" class="me-2">
+                        {{ task.label }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}

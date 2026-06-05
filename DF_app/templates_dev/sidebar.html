@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid h-100 p-0">
+    <div class="row g-0 h-100 flex-nowrap">
+
+        <!-- Sidebar -->
+        <aside class="col-auto bg-light border-end sidebar-nav"
+            style="width: 22rem; height: 100%; overflow-y: auto;">
+
+            <!-- Active module header (click to expand module switcher) -->
+            {% set current_task = app_tasks | selectattr('endpoint', 'equalto', active_task) | list | first %}
+
+            <div class="border-bottom">
+                <button class="btn btn-light w-100 d-flex align-items-center gap-3 p-3 border-0 rounded-0 text-start"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#moduleSwitcher"
+                        aria-expanded="false"
+                        aria-controls="moduleSwitcher">
+                    <img src="{{ current_task.icon }}" alt="" style="width: 2.5rem; height: 2.5rem; object-fit: contain;">
+                    <div class="flex-grow-1">
+                        <div class="text-body-secondary small text-uppercase fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                            Current module
+                        </div>
+                        <div class="fw-semibold">{{ current_task.label }}</div>
+                    </div>
+                    <span class="module-switcher-chevron text-body-secondary" aria-hidden="true">▾</span>
+                </button>
+
+                <!-- Other modules — collapsed by default -->
+                <div class="collapse" id="moduleSwitcher">
+                    <div>
+                        {% for task in app_tasks if task.endpoint != active_task %}
+                        <a href="{{ url_for(task.endpoint) }}"
+                           class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-2">
+                            <img src="{{ task.icon }}" alt="" style="width: 2.5rem; height: 2.5rem; object-fit: contain;">
+                            <div>
+                                <div class="fw-semibold">{{ task.label }}</div>
+                                <small class="text-body-secondary">{{ task.title }}</small>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task-specific filters slot -->
+            <div class="p-3 flex-grow-1">
+                {% block sidebar_filters %}{% endblock %}
+            </div>
+        </aside>
+
+        <!-- Main content (map) -->
+        <main class="col p-0 position-relative overflow-hidden">
+            {% block main_content %}{% endblock %}
+        </main>
+
+    </div>
+</div>
+{% endblock %}

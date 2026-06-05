@@ -1,0 +1,70 @@
+{# Year dropdown options #}
+{% for year in year_list %}
+<option value="{{ year }}">{{ year }}</option>
+{% endfor %}
+
+
+{# Family level — children of a clade #}
+{% for family in family_list %}
+<div class="taxon-row d-flex align-items-center gap-2 mb-1 ms-3">
+    <span class="taxon-bubble" aria-hidden="true"></span>
+    <button class="taxbutton text-button-leveltwo taxon-toggle btn btn-sm btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+            type="button"
+            cname="{{ family[0] }}"
+            sname="{{ family[1] }}"
+            data-level="family"
+            data-clade-context="">
+        <span class="taxon-label">
+            {{ family[0] }}
+            <small class="text-body-secondary fst-italic ms-1">{{ family[1] }}</small>
+        </span>
+        <span class="taxon-chevron" aria-hidden="true">▸</span>
+    </button>
+</div>
+{% endfor %}
+
+
+{# Genus level — children of a family #}
+{% for genus in genus_list %}
+<div class="taxon-row d-flex align-items-center gap-2 mb-1 ms-4">
+    <span class="taxon-bubble" aria-hidden="true"></span>
+    <button class="taxbutton text-button-levelthree taxon-toggle btn btn-sm btn-outline-success flex-grow-1 text-start d-flex align-items-center justify-content-between"
+            type="button"
+            cname="{{ genus[0] }}"
+            sname="{{ genus[1] }}"
+            data-level="genus">
+        <span class="taxon-label">
+            {{ genus[0] }}
+            <small class="text-body-secondary fst-italic ms-1">{{ genus[1] }}</small>
+        </span>
+        <span class="taxon-chevron" aria-hidden="true">▸</span>
+    </button>
+</div>
+{% endfor %}
+
+
+{# Species level — leaf nodes, no chevron #}
+{% for species in species_list %}
+<div class="taxon-row d-flex align-items-center gap-2 mb-1 ms-5">
+    <span class="taxon-bubble" aria-hidden="true"></span>
+    <button class="taxbutton text-button-levelfour btn btn-sm btn-outline-success flex-grow-1 text-start"
+            type="button"
+            cname="{{ species[0] }}"
+            sname="{{ species[1] }}"
+            data-level="species">
+        <span class="taxon-label">
+            {{ species[0] }}
+            <small class="text-body-secondary fst-italic ms-1">{{ species[1] }}</small>
+        </span>
+    </button>
+</div>
+{% endfor %}
+
+
+{# Categorical class options for property filters #}
+{% for class in class_list %}
+<label class="list-group-item d-flex gap-2 py-1">
+    <input class="form-check-input flex-shrink-0" name="{{ class }}" type="checkbox" value="{{ class }}">
+    <span>{{ class }}</span>
+</label>
+{% endfor %}
