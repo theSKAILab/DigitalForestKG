@@ -1693,7 +1693,7 @@ def treepreferences():
                epo:maximumPreference [qudt:unit ?unit].
         ?predimp epo:hasImportanceRank [rdfs:label ?rank].
         
-        FILTER(?tree = "%s")} """ % selectedtree
+        FILTER(?tree = "%s")} """ % selectedtree)
     
     sparql_endpoint.setQuery(treepref_querystring)
 
