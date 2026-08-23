@@ -50,7 +50,7 @@ if config["TRIPLESTORE"] == "GraphDB":
     sparql_endpoint.setMethod(POST)
 elif config["TRIPLESTORE"] == "Qlever":
     sparql_endpoint = SPARQLWrapper(config["Q_ENDPOINT"])
-    sparql_endpoint = setMethod(POST)
+    sparql_endpoint.setMethod(POST)
 else:
     print("No triplestore configured!!")
     exit()
@@ -221,6 +221,8 @@ def minmax():
     Checks for minimum and maximum values of quantities and use them as constraints for sliders
     to guide user selection
     """
+    print("Form Data:", request.form)
+    
     region = request.form.getlist("selectedregion")
     wkt_geom = request.form.get("wkt")
     quality = request.form.get("quality")
@@ -277,6 +279,7 @@ def minmax():
     sparql_endpoint.setQuery(minmax_querystring)
     sparql_endpoint.setReturnFormat(JSON)
     minmaxresults = sparql_endpoint.query().convert()
+    print("Query Returned.")
     for result in minmaxresults["results"]["bindings"]:
         datamax = result["datamax"]["value"]
         datamin = result["datamin"]["value"]
@@ -1640,11 +1643,15 @@ def treeswithpreferences():
     PREFIX ncbitaxon: <http://purl.obolibrary.org/obo/ncbitaxon#>
     PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
     
-    select distinct (SAMPLE(?coname) AS ?cname)
-    where{
+    SELECT DISTINCT (SAMPLE(?coname) AS ?cname)
+    WHERE {
     ?spe ncbitaxon:has_rank obo:NCBITaxon_species;
          oboInOwl:hasExactSynonym ?coname.
-    ?spe rdfs:subClassOf [owl:onProperty epo:hasEnvironmentalPreferenceSet; owl:hasValue ?envprefset]} groupby ?spe"""
+    ?spe rdfs:subClassOf [owl:onProperty epo:hasEnvironmentalPreferenceSet; owl:hasValue ?envprefset]
+    } 
+    GROUPBY ?spe"""
+    
+    print(trees_querystring)
 
     sparql_endpoint.setQuery(trees_querystring)
 
@@ -1694,6 +1701,8 @@ def treepreferences():
         ?predimp epo:hasImportanceRank [rdfs:label ?rank].
         
         FILTER(?tree = "%s")} """ % selectedtree)
+    
+    print(treepref_querystring)
     
     sparql_endpoint.setQuery(treepref_querystring)
 

@@ -2,9 +2,55 @@
 
 {% block content %}
 
-<h2>{{ title }}.</h2>
-<h3>{{ message }}</h3>
+    <div class="d-flex flex-column flex-grow-1"  style="overflow-y: auto;">
+        <div class="bg-footer-green" style="flex: 5 1 0;">
+            <div class="d-flex m-4">
+                <div style="flex: 3 1 0">
+                    <p class="fs-6 ms-3 text-light">About the project</p>
+                    <div class="card-body p-0 ms-3">
+                        <h1 class="card-title text-white">INSPIRES Digital Forest</h1>
+                        <h5 class="card-subtitle mt-4 text-light fs-6">Big Data approach that integrates contrasting forest information which could create a natural laboratory for scientific experimentation.</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 12 1 0">
+            <div class="m-4" style="flex: 2 1 0">
+                <p class="ms-3 fs-6 text-muted border-bottom pb-1">About</p>
+                <div class="card-body pt-1">
+                    <h5 class="card-title fs-2 pb-4">What is INSPIRES?</h5>
+                    <h4 class="card-subtitle text-secondary fs-6 pb-4">INSPIRES stands for Intelligent Informatics and Smart Data for Improved Understanding of Northern Forest Ecosystem Resilience. The platform integrates tree inventory data, environmental climate normals, and species preference models into a unified knowledge graph, making complex forestry data accessible through both a graphical interface and a SPARQL query endpoint.</h4>
+                    <h4 class="card-subtitle text-secondary fs-6">The Digital Forest platform supports decision-making for forest managers, enables peer-reviewed research on carbon capture and biodiversity, and provides an educational tool for students entering the field of forestry and environmental science.</h4>
+                </div>
+            </div>   
+            <div class="d-flex flex-row gap-4 px-4 m-3 me-0" style="flex: 6 1 0;">
+                {% for info in about_info %}
+                    <div class="card card-about" style="flex: 1 1 0;">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">{{info.title}}</h5>
+                            <p class="card-text">{{info.subtitle}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-<p>Big Data approach that integrates contrasting forest information which could create a natural laboratory for scientific experimentation.</p>
-
+            <div class="d-flex flex-column" style="flex: 6 1 0; min-height: 0">            
+                <div class="m-4 mb-0">
+                    <p class="ms-3 fs-6 text-muted border-bottom pb-1">Team</p>
+                </div>
+                <div class="d-flex flex-column m-4 mt-0 ps-3" style="flex: 1 1 0;">
+                    {% for people in people_info %}
+                        <div class="card d-flex flex-row mb-3">
+                                <img src="/static/images/INSPIRES_logo.png" class="m-1" alt="" style="width: 6rem; height: 6rem; object-fit: contain;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{people.title}}</h5>
+                                    <p class="card-text">{{people.subtitle}}</p>
+                                </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+    </div>
 {% endblock %}

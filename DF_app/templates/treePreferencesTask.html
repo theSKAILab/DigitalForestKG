@@ -1,70 +1,96 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="task-page d-flex flex-column h-100">
 
-<div class="map-content" id="visElement"> </div>
-<div class="popup" id="popup"></div>
+  <div class="page-header flex-shrink-0">
+    <h2>Tree Environment Preferences</h2>
 
-<!-- Spinner -->
-<div class="spinner-border custom-spinner" role="status" id="preferences-spinner">
-        <span class="visually-hidden">Loading...</span>
-</div>
+    <div class="header-actions">
+      <input
+        id="treeSearchInput"
+        class="search-input"
+        type="text"
+        placeholder="Search tree species..."
+      />
 
-<div class='instructions-outer'>
-    <div>
-        <button id="hideinstructions" data-bs-toggle="collapse" data-bs-target="#preferences-instructions">Hide/Show instructions</button>
+      <a class="outline-btn" href="{{ url_for('sparql_query') }}">
+        Switch To SPARQL Query
+      </a>
+
+      <button type="button" class="outline-btn" id="howToUseBtn">
+        ? How to use
+      </button>
     </div>
-    <div class="instructions-content collapse show" id="preferences-instructions"> 
-        <p><b>This page allows you to select a tree species and create a feasibility map for it.</b></p>
-        <p>The feasibility map shows Maine colored by how likely the tree species is to be able to grow in each part of the map.  The likelihood or feasibility for the species is computed based on environmental factors that you will select from a list of options (e.g. annual mean temperature).  The environmental factors in the list are annotated with minimum and maximum values that the tree species will tolerate, and the computed importance of the environmental factor for the species.  The feasibility map will only take into consideration the factors you select from this list.</p>
-        <p><b>To use this page:</b>
-            <ol>
-            <li>Select the tree species you want to work with.</li>
-            <li>A list of environmental variables with their minimum and maximum values, and their computed importance rank for the tree species will appear.</li>
-            <li>Select the variables you want to use in the tree feasibility map by checking the boxes.</li>
-            <li>Press the create feasibility map button and wait for the map to appear.</li>
-            </ol></p>
-    </div>
-</div>
+  </div>
 
-<div class="filter-content">
-    <img class="d-block mx-auto mb-4" src="/static/images/INSPIRES_logo.png" alt="" width="72" height="57">
-    <hr>
-    <div class="inner-menu">
-        <a href="{{url_for('environmentalDataTask')}}">
-            <img style="padding:2px;" src="/static/images/env_icon.png" alt="" width="50" height="50" title="Environmental Data Exploration">
-            <div class="caption">Environmental Data</div>
-        </a>
-        <a href={{url_for('treeinventorytask')}}>
-            <img style="padding:2px;" src="/static/images/tree_inventory.png" alt="" width="50" height="50" title="Tree Inventory Data Exploration">
-            <div class="caption">Tree Inventory Data</div>
-        </a>
-        <a href="{{url_for('treepreferencestask')}}" style="border:1px solid black;">
-            <img style="padding:2px;" src="/static/images/analysis.png" alt="" width="50" height="50" title="Analyses of Tree Preference Habitat">
-            <div class="caption">Tree Environmental Preferences</div>
-        </a>
-    </div>
-    <hr>
-    <h5>Tree Species</h5>
-    <hr>
-    <div id="treesWithPreferencesgroup"></div>
-</div>
+  <div class="tree-preference-layout flex-grow-1">
 
-<div class="pref-table-window">
+    <aside class="left-panel">
+      <h4>Tree Species</h4>
+      <p class="small-text">Select a species to view its environmental preferences.</p>
 
-    <div>
-        <div id="treePreferencestables"></div>
+      <div id="treeSpeciesList" class="tree-list">
+        <p class="small-text">Loading tree species...</p>
+      </div>
 
-        <div class="d-flex flex-row mb-3">
-            <button type="button" class="btn btn-success" id="createfeasibilitymap">Create Feasibility Map</button>
-            <div class="p-2" id="loading-message">Processing... Please wait.</div>
-        </div>
-        
-    </div>
+      <div class="help-card" id="howToUseCard">
+        <h4>How to use</h4>
+        <ol>
+          <li>Select a tree species.</li>
+          <li>Review its preference factors.</li>
+          <li>Select the factors you want to include.</li>
+          <li>Create a feasibility map.</li>
+        </ol>
+      </div>
+    </aside>
+
+    <main class="table-panel" id="filtersView">
+      <div class="table-scroll-area">
+        <table class="filter-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Environmental Factor</th>
+              <th>Min</th>
+              <th>Max</th>
+              <th>Importance</th>
+            </tr>
+          </thead>
+          <tbody id="treePreferenceTableBody">
+            <tr>
+              <td colspan="5" class="empty-row">
+                Select a tree species to see preference factors.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <button id="createFeasibilityMapBtn" class="primary-btn" type="button">
+          Create feasibility map
+        </button>
+        <span id="selectedFactorCount">0 factors selected</span>
+        <span id="feasibilityStatus" class="status-text"></span>
+        <span class="sort-label">Sort by: importance</span>
+      </div>
+    </main>
+
+    <main class="map-panel" id="mapView" style="display: none; flex-direction: column; flex: 1 1 auto; min-height: 0;">
+      <div class="map-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.75rem; border-bottom: 1px solid #dee2e6;">
+        <button id="backToFiltersBtn" class="outline-btn" type="button">← Back to filters</button>
+        <span id="mapTitle" style="font-weight: 600;"></span>
+      </div>
+      <div id="visElement" style="position: relative; flex: 1 1 auto; min-height: 0; width: 100%;">
+        {% include "spinner.html" %}
+      </div>
+    </main>
+
+  </div>
 
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/static/scripts/treePreferencesTask.js"></script>
-    {% endblock %}
-
+{% endblock %}

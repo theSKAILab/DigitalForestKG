@@ -2,64 +2,57 @@
 
 {% block content %}
 
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Digital Forest</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('about') }}">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
-                </li>
-                
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        RUN APP
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{{url_for('appHome')}}">Graphical query Interface</a></li>
-                        <li><a class="dropdown-item" href="{{url_for('sparql_query')}}">SPARQL query Interface</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{url_for('dataHelp')}}">Help</a></li>
-                    </ul>
-                </li>
-            </ul>
+    <div class="d-flex flex-column flex-grow-1">
+        <div class="bg-app-green-secondary" style="flex: 5 1 0;">
+            <div class="d-flex h-100 align-items-center">
+                <div style="flex: 3 1 0;">
+                    <span class="badge rounded-pill bg-app-green-badge text-app-green ms-3 fs-6 fw-normal">INSPIRES Platform</span>
+                    <div class="card-body mt-3">
+                        <h1 class="card-title">Explore Maine forest ecosystem data</h1>
+                        <h5 class="card-subtitle mt-5">Query Environmental Data, Tree Inventory Data, and Tree Environmental Preferences across Maine. Filter, visualize, and export your results in seconds.</h6>
+                    </div>
+                </div>
+                <div class="d-flex flex-column h-100 p-2 overflow-hidden" style="flex: 5 1 0;">
+                    <div class="map-content"id="visElement" style="position: initial;"> </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" style="flex: 5 1 0;">
+            <div class="m-4 mb-2" style="flex: 2 1 0">
+                <div class="card-body">
+                    <h5 class="card-title">What You Can Do</h5>
+                    <h4 class="card-subtitle fw-bold">Three ways to explore the forest</h6>
+                </div>
+            </div>   
+            <div class="d-flex gap-4" style="flex: 6 1 0;">
+                {% for task in app_tasks %}
+                    <div style="flex: 1 1 0;">
+                        <div class="card-body d-flex flex-column align-items-center text-center">
+                            <img src="{{ task.icon }}" alt="" class="p-1 mb-2" style="max-height: 4rem;">
+                            <h5 class="card-title">{{ task.label }}</h5>
+                            <p class="card-text">Filter Across Maine</p>
+                            <a href="{{ url_for(task.endpoint) }}" >
+                                <button type="button" class="btn btn-outline-success">Run {{task.data}}</button>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="d-flex flex-row gap-4 px-4 mt-4 mb-4" style="flex: 6 1 0;">
+                {% for info in home_info %}
+                    <div style="flex: 1 1 0;">
+                        <div class="card-body text-center">
+                            <h3 class="card-title">{{info.title}}</h5>
+                            <p class="card-text">{{info.subtitle}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</nav>
-
-<div class="jumbotron">
-    <h1>INSPIRES DIGITAL FOREST</h1>
-    <p class="lead">
-        This app leverages the capabilities of inferencing through a knowledge graph to explore the complex interactions between numerous components in the New England forest.
-    </p>
-</div>
-
-<div class="about-inspires">
-    <div class="row">
-        <div class="col-md-4">
-            <h2>INSPIRES</h2>
-            <p>
-                Leveraging Intelligent Informatics and Smart Data for Improved Understanding of Northern Forest Ecosystem Resilience.
-            </p>
-            <p><a class="btn btn-default" href="https://crsf.umaine.edu/inspires/">Learn more &raquo;</a></p>
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    <p>&copy; {{ year }} - INSPIRES Digital Forest</p>
-</div>
-
+    {% include "footer.html" %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+<script src="/static/scripts/homeMap.js"></script>
 {% endblock %}
-
-

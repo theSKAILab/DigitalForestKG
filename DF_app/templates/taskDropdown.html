@@ -3,7 +3,7 @@
      Query types defined in app.py inject_tasks()
 -->
      
-{% macro task_dropdown(tasks, button_label='Run App', button_class='btn-outline-success') %}
+{% macro task_dropdown(tasks, button_label='Run App', button_class='btn-success') %}
     {% set task_endpoints = tasks | map(attribute='endpoint') | list %}
     <div class="dropdown ms-2">
         <button class="btn {{ button_class }} dropdown-toggle {{ 'active' if request.endpoint in task_endpoints }}"
